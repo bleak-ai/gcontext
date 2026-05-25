@@ -1,115 +1,140 @@
-# EIC Cloud
+# Everything Is Context
 
 Give your agent a knowledge base it can navigate itself.
 
-EIC Cloud is a context management platform for AI agents. Instead of re-explaining your stack every conversation, organize your knowledge as reusable **context modules** — plain markdown in Git that any AI agent can navigate independently.
+EIC is a workspace you create and maintain — a standalone, version-controlled repo where you define what your AI agent knows. Your integrations, your workflows, your active tasks. Structured as composable modules any AI can read.
 
-![EIC Cloud demo](demo/eic-claude-demo.gif)
+![EIC demo](demo/eic-claude-demo.gif)
+
+```
+my-workspace/
+  modules-repo/
+    stripe/            → API keys, webhooks, how to query invoices
+    postgres/          → schema, migrations, connection details
+    deploy-pipeline/   → step-by-step release to production
+    bug-triage/        → how to investigate and classify issues
+```
+
+When you point your agent at the workspace, it reads the module index, navigates to what it needs, and operates with full context. No re-explaining, no pasting, no "let me remind you how our Stripe setup works."
+
+## Install
+
+```bash
+curl -LsSf https://everythingiscontext.com/eic/install.sh | sh
+```
+
+<details>
+<summary>Alternative methods</summary>
+
+```bash
+# Via uv
+uv tool install everythingiscontext
+
+# Via pip
+pip install everythingiscontext
+```
+</details>
+
+## Quick start
+
+**1. Initialize your workspace**
+
+```bash
+$ eic init
+
+context/
+  llms.txt
+  integrations/
+  workflows/
+  tasks/
+```
+
+**2. Add an integration**
+
+```
+$ claude → "Add a postgres integration"
+
+Creating context/integrations/postgres/
+  info.md        ← context about the integration
+  llms.txt       ← navigation for the agent
+  module.yaml    ← secrets: [PG_URL]
+✓ Module created. Requires PG_URL to populate.
+```
+
+**3. Provide the secret it needs**
+
+```bash
+# Add PG_URL to your .env file
+echo "PG_URL=postgres://..." >> .env
+```
+
+**4. The agent fills in the context**
+
+```
+$ claude → "Explore the postgres integration and add the info to postgres/info.md"
+
+Connecting with PG_URL...
+  Found 12 tables, 47 columns, 8 relationships
+  Writing schema to info.md
+✓ Module ready. Agent knows your database.
+```
+
+**5. Query your data, add context anytime**
+
+```
+$ claude → "How many users signed up this week?"
+
+Reads info.md → already knows users table has created_at
+47 users — Free: 31, Pro: 12, Enterprise: 4
+```
+
+Need more context? The agent can add new modules anytime.
+
+## How it works
+
+You version-control your code. You version-control your docs. Now version-control what your AI agent knows.
+
+A workspace has two directories:
+
+- **`modules-repo/`** — where your modules live. Each module is a folder with a few markdown files describing one thing your agent should know about.
+- **`context/`** — the active workspace. When you load a module, it appears here along with a generated index the agent reads to navigate.
+
+The agent reads `context/system.md` → follows `llms.txt` → navigates into the module it needs. That's it.
+
+## Module kinds
+
+| Kind | What it captures | Example |
+|------|-----------------|---------|
+| **Integration** | How to use an external service, API, or database | Stripe, Postgres, GitHub, Slack |
+| **Workflow** | A repeatable procedure that improves over time | Deploy to prod, triage bugs, onboard a teammate |
+| **Task** | A bounded piece of work with progress tracking | Fix billing bug, migrate auth, ship feature X |
+
+## Commands
+
+| Command | What it does |
+|---------|-------------|
+| `eic init` | Create a new workspace |
+| `eic new <kind> <name>` | Scaffold a module |
+| `eic load <name> [...]` | Activate modules in the workspace |
+| `eic unload <name>` | Deactivate a module |
+| `eic ls` | List all modules and their status |
+| `eic env` | Check if required secrets are set |
+| `eic validate [name]` | Verify module structure |
+
+## Works with everything
+
+EIC produces plain markdown files with a navigable index. Any AI that reads files can use it:
+
+Claude Code, Cursor, Windsurf, Copilot, ChatGPT, Codex — if it reads files, it reads EIC.
+
+## Secrets
+
+Modules can declare required environment variables. Values go in `.env` (gitignored). Run `eic env` to check what's missing.
+
+## EIC Cloud
+
+For a web UI with built-in AI chat, visual module editor, secrets management, and more — see [EIC Cloud](https://everythingiscontext.com).
 
 ---
 
-### Table of Contents
-
-- [EIC Cloud](#eic-cloud)
-    - [Table of Contents](#table-of-contents)
-  - [Features](#features)
-  - [Supported Agents](#supported-agents)
-  - [Self-host with Docker](#self-host-with-docker)
-  - [Run Locally (Development)](#run-locally-development)
-  - [Test with Claude Code](#test-with-claude-code)
-  - [Architecture](#architecture)
-  - [Contributing](#contributing)
-
----
-
-## Features
-
-**Three module types:**
-
-- **Integrations** — Your external services: Stripe setup, database schema, CI pipeline, API docs
-- **Workflows** — How you deploy, triage, onboard — agents follow your process step by step
-- **Tasks** — Current work items; agents pick up where you left off
-
-**Platform capabilities:**
-
-- Visual module editor with live markdown preview
-- Built-in AI chat with your full context loaded
-- Modular context selection — enable only the modules each conversation needs
-- Secret management via Varlock — secrets injected at runtime, never in files
-- Git sync — modules live in a repo; pull, push, and review changes from the UI
-- Session persistence across restarts
-- Cron jobs for automated background tasks
-
-## Supported Agents
-
-EIC modules are plain markdown + YAML — they work with any agent that reads files:
-
-- Claude Code
-- Cursor
-- Codex
-- pi.dev
-
-## Self-host with Docker
-
-```bash
-cp .env.example platform/.env   # fill in your credentials
-docker compose up -d
-```
-
-Open http://localhost:9090
-
-Update to latest version:
-
-```bash
-docker compose pull && docker compose up -d
-```
-
-The container includes Python 3.12, Node.js 22, Claude Code, Varlock, and Git. Modules are loaded from GitHub at runtime via the `GH_OWNER`/`GH_REPO`/`GH_TOKEN` env vars.
-
-## Run Locally (Development)
-
-```bash
-cd platform
-uv sync
-uv run start
-```
-
-To build from source with Docker:
-
-```bash
-cd platform
-docker build -t eic-cloud:local .
-docker run --rm -p 9090:9090 --env-file .env.demo eic-cloud:local
-```
-
-## Test with Claude Code
-
-1. Start the server (locally or with Docker)
-2. Open http://localhost:9090 and select the modules you want to load
-3. Open Claude Code from the context directory:
-   ```bash
-   cd platform/src/context
-   claude
-   ```
-4. Claude will read the `CLAUDE.md` in that directory and work only with the loaded modules
-
-## Architecture
-
-```
-├── core/            # Shared library — module specs, manifest parsing, templates
-├── demo/            # CLI demo script + GIF
-├── eic/             # CLI entry point
-├── pyproject.toml   # Package definition
-└── README.md
-```
-
-**Backend:** Python 3.12, FastAPI, SQLite, Varlock
-**Frontend:** React 19, Vite, TanStack Router, Tailwind CSS, Radix UI
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit your changes: `git commit -m 'Add your feature'`
-4. Push to the branch: `git push origin feature/your-feature`
-5. Open a Pull Request
+Built by [Bleak AI](https://bleakai.com) | [everythingiscontext.com](https://everythingiscontext.com)
