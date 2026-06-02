@@ -9,7 +9,7 @@ Modules live at `modules-repo/<slug>/`. The `context/` directory contains symlin
 Two operations that look similar but are NOT the same:
 
 - **Create / edit a module.** You write files at `modules-repo/<slug>/...`. This is the only kind of write you perform.
-- **Load a module into the workspace.** This creates a symlink inside `context/`. It is managed by `eic.py`, not by you.
+- **Load a module into the workspace.** This creates a symlink inside `context/`. It is managed by the `gcontext` CLI, not by you.
 
 Each module is a folder with at least `module.yaml` and `llms.txt`.
 

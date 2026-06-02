@@ -84,7 +84,7 @@ class InfoSection:
     format: str  # "freeform" or description of strict format
 
 
-# Core version: 6 sections (no "Python packages" -- that's added by EIC Cloud)
+# Core version: 6 sections (no "Python packages" -- that's added by gcontext Cloud)
 INTEGRATION_INFO_SECTIONS: list[InfoSection] = [
     InfoSection(
         "Purpose",

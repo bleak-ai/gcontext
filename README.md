@@ -1,4 +1,4 @@
-# Everything Is Context
+# gcontext
 
 **Context engineering for AI agents.**
 
@@ -16,7 +16,7 @@ This isn't a model problem. It's an engineering problem.
 
 Most teams solve it by writing longer prompts, pasting more docs, or hoping the agent remembers. That works until it doesn't, and it stops working fast.
 
-**EIC treats context as infrastructure.**
+**gcontext treats context as infrastructure.**
 
 ---
 
@@ -30,7 +30,7 @@ Most teams solve it by writing longer prompts, pasting more docs, or hoping the 
 - Context bloat kills quality on long tasks
 - Tribal knowledge lives in one person's prompt history
 
-**With EIC:**
+**With gcontext:**
 
 ```
 context/
@@ -43,25 +43,25 @@ context/
 
 Each module is a self-contained unit of context. Load what the task needs, unload what it doesn't. The agent navigates to what's relevant. Nothing else enters the window.
 
-![EIC demo](demo/eic-claude-demo.gif)
+![gcontext demo](demo/gcontext-claude-demo.gif)
 
 ---
 
 ## Install
 
 ```bash
-curl -LsSf https://everythingiscontext.com/eic/install.sh | sh
+curl -LsSf https://gcontext.ai/gcontext/install.sh | sh
 ```
 
 <details>
 <summary>Alternative methods</summary>
 
 ```bash
-# Via uv
-uv tool install everythingiscontext
+# Via uv (PyPI name is gcontext-ai; the command is `gcontext`)
+uv tool install gcontext-ai
 
 # Via pip
-pip install everythingiscontext
+pip install gcontext-ai
 ```
 </details>
 
@@ -70,7 +70,7 @@ pip install everythingiscontext
 **1. Initialize your workspace**
 
 ```bash
-$ eic init
+$ gcontext init
 
 context/
   llms.txt
@@ -124,7 +124,7 @@ Need more context? The agent can add new modules anytime.
 
 ## How it works: composable context
 
-EIC introduces one core mechanic: **composable context**.
+gcontext introduces one core mechanic: **composable context**.
 
 Modules are independent units of knowledge: an API integration, a deployment procedure, a bug investigation. Each contains plain markdown and a navigation index (`llms.txt`) the agent uses to find what it needs.
 
@@ -207,17 +207,17 @@ Point your coding agent at the workspace. It navigates to the module it needs pe
 
 ---
 
-## What EIC is not
+## What gcontext is not
 
-EIC is not:
+gcontext is not:
 
 - **A vector database.** No embeddings. The agent navigates a file tree, not a similarity search.
 - **A memory model.** No implicit memory. Context is explicit, human-curated, version-controlled.
-- **A replacement for RAG.** Complementary. EIC structures the knowledge RAG can retrieve from.
+- **A replacement for RAG.** Complementary. gcontext structures the knowledge RAG can retrieve from.
 - **An autonomous agent framework.** No agent runtime. Works with the agent you already use.
 - **Another orchestration layer.** No workflow engine. Just structured, navigable knowledge.
 
-**EIC is a context engineering toolkit.** It gives your agent a composable knowledge base it can navigate itself.
+**gcontext is a context engineering toolkit.** It gives your agent a composable knowledge base it can navigate itself.
 
 ---
 
@@ -225,7 +225,7 @@ EIC is not:
 
 > "Why not just use a vector database / memory layer?"
 
-| | Filesystem (EIC) | Vector DB / Memory |
+| | Filesystem (gcontext) | Vector DB / Memory |
 |---|---|---|
 | **Version control** | `git diff`, `git blame`, full history | Requires custom versioning |
 | **Inspectability** | Open a folder, read the files | Query an API, decode embeddings |
@@ -243,28 +243,28 @@ The filesystem is the most universal, inspectable, composable storage layer that
 
 | Command | What it does |
 |---------|-------------|
-| `eic init` | Create a new workspace |
-| `eic new <kind> <name>` | Scaffold a module |
-| `eic load <name> [...]` | Activate modules in the workspace |
-| `eic unload <name>` | Deactivate a module |
-| `eic ls` | List all modules and their status |
-| `eic env` | Check if required secrets are set |
-| `eic validate [name]` | Verify module structure |
+| `gcontext init` | Create a new workspace |
+| `gcontext new <kind> <name>` | Scaffold a module |
+| `gcontext load <name> [...]` | Activate modules in the workspace |
+| `gcontext unload <name>` | Deactivate a module |
+| `gcontext ls` | List all modules and their status |
+| `gcontext env` | Check if required secrets are set |
+| `gcontext validate [name]` | Verify module structure |
 
 ## Works with everything
 
-EIC produces plain markdown files with a navigable index. Any AI that reads files can use it:
+gcontext produces plain markdown files with a navigable index. Any AI that reads files can use it:
 
-Claude Code, Cursor, Windsurf, Copilot, ChatGPT, Codex. If it reads files, it reads EIC.
+Claude Code, Cursor, Windsurf, Copilot, ChatGPT, Codex. If it reads files, it reads gcontext.
 
 ## Secrets
 
-Modules can declare required environment variables. Values go in `.env` (gitignored). Run `eic env` to check what's missing.
+Modules can declare required environment variables. Values go in `.env` (gitignored). Run `gcontext env` to check what's missing.
 
-## EIC Cloud
+## gcontext Cloud
 
-For a web UI with built-in AI chat, visual module editor, secrets management, and more, see [EIC Cloud](https://everythingiscontext.com).
+For a web UI with built-in AI chat, visual module editor, secrets management, and more, see [gcontext Cloud](https://gcontext.ai).
 
 ---
 
-Built by [Bleak AI](https://bleakai.com) | [everythingiscontext.com](https://everythingiscontext.com)
+Built by [Bleak AI](https://bleakai.com) | [gcontext.ai](https://gcontext.ai)

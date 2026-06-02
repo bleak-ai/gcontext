@@ -1,4 +1,4 @@
-"""Simulates Claude Code responding in an EIC workspace.
+"""Simulates Claude Code responding in a gcontext workspace.
 
 Two modes:
   add   — Claude creates a postgres integration
@@ -7,7 +7,7 @@ Two modes:
 The script prints both the user's prompt (> ...) and Claude's
 streamed response, mimicking Claude Code's interactive terminal.
 
-Used by eic-claude-demo.tape.
+Used by gcontext-claude-demo.tape.
 Run: uv run --quiet python claude-sim.py <mode>
 """
 
@@ -45,13 +45,13 @@ def scene_add():
     time.sleep(0.3)
 
     # Tool use — creating module
-    typewrite("    eic new integration postgres  \x1b[32m\u2713\x1b[0m", 0.012)
+    typewrite("    gcontext new integration postgres  \x1b[32m\u2713\x1b[0m", 0.012)
     time.sleep(0.2)
     typewrite(
         "    Write modules-repo/postgres/info.md  \x1b[32m\u2713\x1b[0m", 0.012
     )
     time.sleep(0.2)
-    typewrite("    eic load postgres  \x1b[32m\u2713\x1b[0m", 0.012)
+    typewrite("    gcontext load postgres  \x1b[32m\u2713\x1b[0m", 0.012)
     print()
     time.sleep(0.4)
 

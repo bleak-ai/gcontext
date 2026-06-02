@@ -1,14 +1,15 @@
-# EIC + Claude Code — terminal demo
+# gcontext + Claude Code — terminal demo
 #
 # Shows a full workflow: init workspace, ask Claude to add a postgres
 # integration, configure the connection secret, then query via Claude.
 #
-# Run:  cd /Users/bsampera/Documents/bleak-dev/eic && vhs demo/eic-claude-demo.tape
-# Out:  demo/eic-claude-demo.gif
+# Run:  cd /Users/bsampera/Documents/bleak-dev/eic && vhs demo/gcontext-claude-demo.tape
+# Out:  demo/gcontext-claude-demo.gif
 
-Output demo/eic-claude-demo.gif
+Output demo/gcontext-claude-demo.gif
+Output landing/public/gcontext-claude-demo.mp4
 
-Require eic
+Require gcontext
 Require uv
 
 Set Shell "bash"
@@ -28,10 +29,10 @@ Set Framerate 24
 # Hidden prep — clean slate, cd into workspace, claude alias
 # ═══════════════════════════════════════════════════
 Hide
-Type@1ms "rm -rf /tmp/eic-demo-ws"
+Type@1ms "rm -rf /tmp/gcontext-demo-ws"
 Enter
 Sleep 300ms
-Type@1ms "mkdir -p /tmp/eic-demo-ws && cd /tmp/eic-demo-ws"
+Type@1ms "mkdir -p /tmp/gcontext-demo-ws && cd /tmp/gcontext-demo-ws"
 Enter
 Sleep 300ms
 Type@1ms "DEMO_DIR=/Users/bsampera/Documents/bleak-dev/eic/demo"
@@ -50,7 +51,7 @@ Show
 # ═══════════════════════════════════════════════════
 Sleep 1s
 
-Type "eic init"
+Type "gcontext init"
 Enter
 Sleep 3s
 
