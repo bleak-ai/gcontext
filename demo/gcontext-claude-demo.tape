@@ -3,7 +3,7 @@
 # Shows a full workflow: init workspace, ask Claude to add a postgres
 # integration, configure the connection secret, then query via Claude.
 #
-# Run:  cd /Users/bsampera/Documents/bleak-dev/eic && vhs demo/gcontext-claude-demo.tape
+# Run:  cd /Users/bsampera/Documents/bleak-dev/gcontext-cloud && vhs demo/gcontext-claude-demo.tape
 # Out:  demo/gcontext-claude-demo.gif
 
 Output demo/gcontext-claude-demo.gif
@@ -35,7 +35,7 @@ Sleep 300ms
 Type@1ms "mkdir -p /tmp/gcontext-demo-ws && cd /tmp/gcontext-demo-ws"
 Enter
 Sleep 300ms
-Type@1ms "DEMO_DIR=/Users/bsampera/Documents/bleak-dev/eic/demo"
+Type@1ms "DEMO_DIR=/Users/bsampera/Documents/bleak-dev/gcontext-cloud/demo"
 Enter
 Sleep 200ms
 Type@1ms "claude() { uv run --quiet python $DEMO_DIR/claude-sim.py add; }"
