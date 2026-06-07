@@ -67,6 +67,46 @@ def _regenerate():
     generate_system_md(CONTEXT_DIR, template_content)
     _copy_static_files()
     _generate_env_example()
+    _generate_agents_md()
+
+
+# Managed bootstrap block written to AGENTS.md at the project root. AGENTS.md is
+# the tool-agnostic convention most coding agents auto-load; it points the agent
+# at the generated context/system.md entry file (the CLI cannot inject a system
+# prompt the way the hosted platform does, so this pointer is the bootstrap).
+_AGENTS_START = "<!-- gcontext:start -->"
+_AGENTS_END = "<!-- gcontext:end -->"
+_AGENTS_BLOCK = f"""{_AGENTS_START}
+## gcontext workspace
+
+This is a gcontext workspace. Before doing anything else, read `context/system.md` — \
+it explains how to operate the loaded context modules: navigate the `llms.txt` tree, \
+run module scripts, and handle secrets. Re-read it whenever modules are loaded or unloaded.
+{_AGENTS_END}"""
+
+
+def _generate_agents_md():
+    """Write/refresh the gcontext bootstrap block in AGENTS.md at the project root.
+
+    Non-destructive: only the content between the gcontext markers is managed;
+    any other content the user adds to AGENTS.md is preserved.
+    """
+    agents = Path.cwd() / "AGENTS.md"
+    if not agents.exists():
+        agents.write_text(f"# AGENTS.md\n\n{_AGENTS_BLOCK}\n")
+        return
+
+    content = agents.read_text()
+    pattern = re.compile(
+        re.escape(_AGENTS_START) + r".*?" + re.escape(_AGENTS_END), re.DOTALL
+    )
+    if pattern.search(content):
+        new_content = pattern.sub(lambda _: _AGENTS_BLOCK, content)
+    else:
+        new_content = content.rstrip("\n") + "\n\n" + _AGENTS_BLOCK + "\n"
+
+    if new_content != content:
+        agents.write_text(new_content)
 
 
 def _generate_env_example():
