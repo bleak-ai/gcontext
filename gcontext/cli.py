@@ -125,6 +125,7 @@ def _regenerate():
     _copy_static_files()
     _generate_env_example()
     _generate_agents_md()
+    _generate_claude_md()
 
 
 def _regen_and_report():
@@ -171,6 +172,18 @@ def _generate_agents_md():
 
     if new_content != content:
         agents.write_text(new_content)
+
+
+def _generate_claude_md():
+    """Create CLAUDE.md importing AGENTS.md, if the user doesn't have one.
+
+    Claude Code auto-loads CLAUDE.md (not AGENTS.md); the @import keeps
+    AGENTS.md as the single source of truth for every agent. Never touches
+    an existing CLAUDE.md.
+    """
+    claude = Path.cwd() / "CLAUDE.md"
+    if not claude.exists():
+        claude.write_text("@AGENTS.md\n")
 
 
 def _generate_env_example():
@@ -247,7 +260,10 @@ def cmd_init(args):
     else:
         print("Created modules-repo/")
         print("Created context/")
-        print("Ready. Create your first module with: gcontext new integration <name>")
+        print(
+            "Ready. Open your agent and ask it to create a module — "
+            "or run: gcontext new integration <name>"
+        )
 
 
 def cmd_new(args):
