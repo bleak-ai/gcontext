@@ -263,7 +263,7 @@ Modules can declare required environment variables. Values go in `.env` (gitigno
 
 ## gcontext Cloud
 
-For a web UI with built-in AI chat, visual module editor, secrets management, and more, see [gcontext Cloud](https://gcontext.ai).
+For a web UI with built-in AI chat, visual module editor, secrets management, and more, see [gcontext Cloud](https://gcontext.ai/how-it-works?ref=github-readme).
 
 ---
 
