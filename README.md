@@ -33,12 +33,11 @@ Most teams solve it by writing longer prompts, pasting more docs, or hoping the 
 **With gcontext:**
 
 ```
-context/
-  modules-repo/
-    stripe/            → API keys, webhooks, how to query invoices
-    postgres/          → schema, migrations, connection details
-    deploy-pipeline/   → step-by-step release to production
-    bug-triage/        → how to investigate and classify issues
+modules-repo/
+  stripe/            → API keys, webhooks, how to query invoices
+  postgres/          → schema, migrations, connection details
+  deploy-pipeline/   → step-by-step release to production
+  bug-triage/        → how to investigate and classify issues
 ```
 
 Each module is a self-contained unit of context. Load what the task needs, unload what it doesn't. The agent navigates to what's relevant. Nothing else enters the window.
@@ -72,24 +71,35 @@ pip install gcontext-ai
 ```bash
 $ gcontext init
 
-context/
-  llms.txt
-  integrations/
-  workflows/
-  tasks/
+Created modules-repo/
+Created context/
+Ready. Create your first module with: gcontext new integration <name>
 ```
+
+This gives you:
+
+```
+.gitignore           # ignores .env
+AGENTS.md            # points coding agents at context/system.md (managed block)
+context/             # what the agent reads: llms.txt, system.md, principles.md, ...
+modules-repo/        # where modules live (seeded with an example/ module)
+```
+
+Re-running `gcontext init` in an existing workspace errors with "workspace already initialized" — it never overwrites your files.
 
 **2. Add an integration**
 
 ```
 $ claude → "Add a postgres integration"
 
-Creating context/integrations/postgres/
+Creating modules-repo/postgres/
   info.md        ← context about the integration
   llms.txt       ← navigation for the agent
   module.yaml    ← secrets: [PG_URL]
 ✓ Module created. Requires PG_URL to populate.
 ```
+
+Modules live in `modules-repo/`; `gcontext load postgres` symlinks one into `context/postgres` so the agent can navigate to it.
 
 **3. Provide the secret it needs**
 
@@ -101,7 +111,7 @@ echo "PG_URL=postgres://..." >> .env
 **4. The agent fills in the context**
 
 ```
-$ claude → "Explore the postgres integration and add the info to postgres/info.md"
+$ claude → "Explore the postgres integration and add the info to modules-repo/postgres/info.md"
 
 Connecting with PG_URL...
   Found 12 tables, 47 columns, 8 relationships
@@ -158,12 +168,11 @@ Different shapes for different lifecycles. They coexist and compose.
 **Software engineering team**
 
 ```
-context/
-  modules-repo/
-    postgres/          → schema, connection, query patterns
-    github/            → repo structure, PR conventions, CI
-    deploy-pipeline/   → release steps, rollback procedures
-    fix-billing-bug/   → task: reproduce, investigate, fix, verify
+modules-repo/
+  postgres/          → schema, connection, query patterns
+  github/            → repo structure, PR conventions, CI
+  deploy-pipeline/   → release steps, rollback procedures
+  fix-billing-bug/   → task: reproduce, investigate, fix, verify
 ```
 
 The agent reads the database schema, understands CI, follows the deploy playbook, and tracks progress on the billing fix, all from structured context.
@@ -171,12 +180,11 @@ The agent reads the database schema, understands CI, follows the deploy playbook
 **Support automation**
 
 ```
-context/
-  modules-repo/
-    zendesk/           → API access, ticket categories, macros
-    stripe/            → subscription lookup, refund procedures
-    knowledge-base/    → product docs, known issues, FAQ
-    escalation/        → workflow: when and how to escalate
+modules-repo/
+  zendesk/           → API access, ticket categories, macros
+  stripe/            → subscription lookup, refund procedures
+  knowledge-base/    → product docs, known issues, FAQ
+  escalation/        → workflow: when and how to escalate
 ```
 
 An agent triaging tickets reads the Zendesk integration, checks Stripe for billing context, references the KB, and follows escalation rules, without a 10,000-token system prompt.
@@ -184,23 +192,21 @@ An agent triaging tickets reads the Zendesk integration, checks Stripe for billi
 **Content pipeline**
 
 ```
-context/
-  modules-repo/
-    cms/               → API, content models, publishing flow
-    brand-voice/       → tone guidelines, examples, anti-patterns
-    analytics/         → what performs, audience segments
-    weekly-newsletter/ → task: this week's edition
+modules-repo/
+  cms/               → API, content models, publishing flow
+  brand-voice/       → tone guidelines, examples, anti-patterns
+  analytics/         → what performs, audience segments
+  weekly-newsletter/ → task: this week's edition
 ```
 
 **Claude Code / Cursor workflow**
 
 ```
-context/
-  modules-repo/
-    codebase/          → architecture, conventions, key paths
-    cloudflare/        → DNS, workers, deployment targets
-    monitoring/        → Grafana dashboards, alert rules
-    ship-v2-auth/      → task: migrate auth with progress tracking
+modules-repo/
+  codebase/          → architecture, conventions, key paths
+  cloudflare/        → DNS, workers, deployment targets
+  monitoring/        → Grafana dashboards, alert rules
+  ship-v2-auth/      → task: migrate auth with progress tracking
 ```
 
 Point your coding agent at the workspace. It navigates to the module it needs per task: your codebase conventions when writing code, your deploy integration when shipping, your monitoring setup when debugging production.
@@ -243,8 +249,8 @@ The filesystem is the most universal, inspectable, composable storage layer that
 
 | Command | What it does |
 |---------|-------------|
-| `gcontext init` | Create a new workspace |
-| `gcontext new <kind> <name>` | Scaffold a module |
+| `gcontext init` | Create a new workspace (errors if one already exists) |
+| `gcontext new <kind> <name> [summary]` | Scaffold a module |
 | `gcontext load <name> [...]` | Activate modules in the workspace |
 | `gcontext unload <name>` | Deactivate a module |
 | `gcontext ls` | List all modules and their status |

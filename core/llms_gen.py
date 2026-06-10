@@ -42,7 +42,11 @@ def generate_root_llms_txt(context_dir: Path) -> None:
     (context_dir / "llms.txt").write_text("\n".join(lines) + "\n")
 
 
-def generate_structure_md(context_dir: Path, info_sections: list | None = None) -> None:
+def generate_structure_md(
+    context_dir: Path,
+    info_sections: list | None = None,
+    audience: str = "cloud",
+) -> None:
     """Write context/structure.md from manifest schema and kind specs.
 
     Auto-generated reference for module.yaml fields, per-kind file
@@ -50,13 +54,17 @@ def generate_structure_md(context_dir: Path, info_sections: list | None = None) 
 
     Accepts optional info_sections so the platform can pass its extended
     list (with "Python packages" section). Defaults to core's 6-section list.
+
+    audience="cloud" (default) documents every manifest field with platform
+    semantics; audience="oss" documents only the fields the OSS CLI acts on,
+    with .env-based descriptions (see core.manifest.render_schema_md).
     """
     body = "\n".join([
         "# Module Structure",
         "",
         "Auto-generated from `manifest.py` and `kind_specs.py`. Do not edit by hand.",
         "",
-        render_schema_md(),
+        render_schema_md(audience=audience),
         "",
         "## Module kinds",
         "",

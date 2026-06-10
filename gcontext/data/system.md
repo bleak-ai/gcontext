@@ -45,10 +45,12 @@ A module needs secrets if and only if its `module.yaml` declares a `secrets:` li
 
 "Task", "integration", and "workflow" are **module kinds** — not abstract concepts. When the user says "create a task", "add an integration", or "set up a workflow", they mean create a new module with that kind. See [structure.md](structure.md) for the file layout of each kind.
 
-## Module features — scripts, cron jobs, apps
+## Module features — scripts
 
-Modules can carry scripts, scheduled cron jobs, and browser apps. If the user asks to set up a cron job, build an app, add a verify script, or any similar capability, read [module_features.md](module_features.md) for the catalog and conventions.
+Modules can carry scripts: plain Python files run on demand, like a `verify.py` sanity check. If the user asks to add a verify script, a fetch script, or any similar capability, read [module_features.md](module_features.md) for the conventions.
 
 ## Modifying context
 
 If you are asked to create a task, add an integration, start a workflow, create a new module, edit module files, or change anything in `modules-repo/<slug>/`, read [principles.md](principles.md) and [structure.md](structure.md) first. They own the rules for where things go, module kinds, and how writes are gated.
+
+A reference module showing the expected format lives at `modules-repo/example/` — read it before creating or restructuring modules.

@@ -24,7 +24,7 @@ KIND_SPECS: dict[str, KindSpec] = {
         purpose="Reusable access to an external service, API, database, or local tool.",
         required_files=["module.yaml", "llms.txt", "info.md"],
         starter_file="info.md",
-        starter_outline="Purpose, Access, Operations, Example usage.",
+        starter_outline="Purpose, Where it lives, Auth & access, Key entities, Operations, Examples.",
         default_growth_folders=[
             {"name": "notes", "path": "notes/<date-slug>.md"},
         ],
@@ -63,7 +63,7 @@ def render_kind_specs_md() -> str:
         lines.append("")
         lines.append("**Files written at creation:**")
         for f in spec.required_files:
-            note = f" - {spec.starter_outline}" if f == spec.starter_file else ""
+            note = f" — {spec.starter_outline}" if f == spec.starter_file else ""
             lines.append(f"- `{f}`{note}")
         if spec.default_growth_folders:
             lines.append("")
@@ -99,7 +99,7 @@ INTEGRATION_INFO_SECTIONS: list[InfoSection] = [
     InfoSection(
         "Auth & access",
         "How the agent authenticates. Required secret names are written as `UPPER_CASE` in backticks.",
-        "strict: secret names as `UPPER_CASE` backtick tokens",
+        "secret names written as `UPPER_CASE` tokens in backticks",
     ),
     InfoSection(
         "Key entities",
@@ -128,8 +128,8 @@ def render_info_md_sections_md(sections: list[InfoSection] | None = None) -> str
     sections = sections or INTEGRATION_INFO_SECTIONS
     lines: list[str] = ["### `info.md` sections (integration kind)", ""]
     for s in sections:
-        lines.append(f"- `## {s.name}` -- {s.purpose}")
+        lines.append(f"- `## {s.name}` — {s.purpose}")
         if s.format != "freeform":
-            lines.append(f"  - Format: {s.format}")
+            lines.append(f"  - Strict format: {s.format}")
     lines.append("")
     return "\n".join(lines)

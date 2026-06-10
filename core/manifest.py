@@ -198,19 +198,43 @@ def _format_type(annotation) -> str:
     return getattr(annotation, "__name__", str(annotation))
 
 
-def render_schema_md() -> str:
+# Audience-specific schema rendering. The Field descriptions on the model are
+# written for gcontext Cloud (varlock secrets, sidebar, platform venv, cron
+# scheduler). The OSS CLI has none of that runtime, so the "oss" audience
+# substitutes plain .env semantics and omits cloud-only fields entirely.
+# A value of None means "omit this field from the OSS schema".
+_OSS_FIELD_DESCRIPTIONS: dict[str, str | None] = {
+    "kind": 'One of: "integration", "task", "workflow". Determines the module\'s file layout (see Module kinds below).',
+    "secrets": "Environment variable names this module needs at runtime. Values are read from the `.env` file at the project root (see secrets.md).",
+    "dependencies": "Python packages the module's scripts need at runtime. Install them in your environment before running module scripts.",
+    "archived": None,
+    "icon": None,
+    "jobs": None,
+}
+
+
+def render_schema_md(audience: str = "cloud") -> str:
     """Render ModuleManifest as a markdown schema block for prompt injection.
 
     Walks the model's fields and emits one bullet per field with type,
     default, and description. Single source of truth for what the AI
     should write into module.yaml — adding a new field here makes it
     visible to the chat agent automatically.
+
+    audience="cloud" (default) renders every field with the platform
+    descriptions. audience="oss" renders only the fields the OSS CLI
+    acts on, with .env-based descriptions.
     """
     lines = ["## module.yaml schema", ""]
     for field_name, field in ModuleManifest.model_fields.items():
+        desc = field.description or ""
+        if audience == "oss":
+            override = _OSS_FIELD_DESCRIPTIONS.get(field_name, desc)
+            if override is None:
+                continue
+            desc = override
         type_str = _format_type(field.annotation)
         default_str = _format_default(field)
-        desc = field.description or ""
         lines.append(f"- `{field_name}` ({type_str}, {default_str}) — {desc}")
         if type_str == "list[JobSpec]":
             for sub_name, sub in JobSpec.model_fields.items():
