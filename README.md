@@ -6,9 +6,9 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/pypi/pyversions/gcontext-ai)](https://pypi.org/project/gcontext-ai/)
 
-Your agent's knowledge and its working state as plain markdown in git: modular, reviewable, loaded per task. No embeddings, no memory layer, no new runtime. Works with Claude Code, Cursor, Codex — anything that reads files.
+Your agent's knowledge and its working state as plain markdown in git: modular, reviewable, loaded per task. No embeddings, no memory layer, no new runtime. Works with Claude Code, Cursor, Codex, and anything else that reads files.
 
-Modules don't just *describe* your stack — they carry the credentials and the know-how for the agent to **act** on it: query the database, hit the Stripe API, run the deploy.
+Modules don't just *describe* your stack. They carry the credentials and the know-how for the agent to **act** on it: query the database, hit the Stripe API, run the deploy.
 
 And work in flight survives the session: start a migration today, get blocked waiting on an email, come back Thursday and say "continue". The agent kept track of where things stand, so you don't have to.
 
@@ -74,85 +74,84 @@ That's the whole footprint: no account, no server, no vector database. Your keys
 
 ## Quick start
 
-`gcontext init` is the only command you have to run. After that, your agent operates the workspace itself — it can create modules, fill them in, and load them, because the workspace tells it how.
+Three copy-pastes: one command, two lines in `.env`, one prompt. Your agent does the rest.
 
-**1. Initialize**
+### 1. Initialize
 
 ```bash
-$ gcontext init
-
-Created modules-repo/
-Created context/
-
-Now open your agent (Claude Code, Cursor, ...) and say:
-
-    Set up gcontext for this project.
-
-It will ask what you keep re-explaining and what you're working on,
-then create and load your first modules.
+gcontext init
 ```
 
-This gives you:
+The only command you have to run. It creates the workspace your agent operates from:
 
 ```
 AGENTS.md            # auto-loaded by your agent; points it at context/system.md
 CLAUDE.md            # one line: @AGENTS.md (Claude Code reads this file)
-context/             # what the agent reads: generated llms.txt index + symlinks to loaded modules
-modules-repo/        # source of truth: your modules (seeded with an example/)
-.gitignore           # ignores .env
+context/             # what the agent reads: generated llms.txt index + loaded modules
+modules-repo/        # source of truth: your modules
 ```
 
-Re-running `gcontext init` in an existing workspace errors out — it never overwrites your files.
+It never overwrites anything: re-running it in an existing workspace errors out.
 
-**2. Say the setup prompt**
-
-On a fresh workspace, "Set up gcontext for this project" makes the agent interview you — *what do you re-explain every session? what does it always get wrong? what are you in the middle of right now?* — and turn your answers into your first modules: usually an integration for the stack and a task for the work in flight. You never pick a module kind or learn the taxonomy first; the agent handles that and shows you the diff.
-
-You can also just ask for what you need directly: "Add a supabase integration, the keys are in .env." The exact prompt we test against a real model is in the [first-integration walkthrough](examples/first-integration.md); the agent creates the module (`info.md` with the API know-how, `llms.txt` as the index, `module.yaml` declaring the secret by name only) and loads it.
-
-**3. Provide the secret it needs**
+### 2. Put a key in `.env`
 
 ```bash
-echo "PG_URL=postgres://..." >> .env    # gitignored; only the *name* is in the module
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SECRET_KEY=sb_secret_...
 ```
 
-Use read-only credentials where you can, and review what the agent writes into a module before committing — it documents what it sees.
+Module files only ever name the variables. The values stay in the gitignored `.env`. Prefer read-only credentials where the service offers them.
 
-**4. Ask it to do real work — it queries production itself**
+### 3. Say the prompt
 
-Open a fresh session, one that has never seen your project, and ask: "How many users do we have?" In [the recorded session](https://gcontext.ai/first-session.html) the agent follows the index to the integration module, calls the API with the key from `.env`, and answers with the live row count, which the test then verifies against the database independently. No MCP server, no tool definitions; the module was enough.
-
-**5. Hand it the work in flight**
+Open your agent (Claude Code, Cursor, Codex) in the workspace and ask for what you have:
 
 ```
-$ claude → "We're migrating auth to OAuth. Track it as a task."
-
-Creating modules-repo/oauth-migration/
-  brief.md       ← the goal and the plan
-  status.md      ← progress, blockers, what's next
+Create a supabase integration module for our Supabase project and load it
+into the workspace. The keys are in .env as SUPABASE_URL and SUPABASE_SECRET_KEY.
 ```
 
-From now on the task survives the session. Days later, in a fresh conversation, "continue the oauth migration" is all the briefing the agent needs.
+The agent builds and loads the module itself: `info.md` with the API know-how, `llms.txt` as the index, `module.yaml` declaring the secrets by name only. The exact prompt we test against a real model before every release is in the [first-integration walkthrough](examples/first-integration.md).
 
-**See it run, for real.** The GIF at the top is a replay of a recorded session, and [the full unedited transcript](https://gcontext.ai/first-session.html) is public: every tool call, the module files the agent wrote, and the final answer verified against the live API. The walkthrough prompt is extracted from [examples/first-integration.md](examples/first-integration.md) and run against a real model before releases; if the quick start stops working, the release does not ship.
+Starting from zero instead? Say `Set up gcontext for this project` and the agent interviews you (what do you re-explain every session? what are you working on?), then builds your first modules from the answers.
 
-Prefer doing things by hand? Every step is also a deterministic command — `gcontext new`, `gcontext load`, `gcontext ls`, `gcontext validate`. See [Commands](#commands). The agent uses the same files either way.
+### 4. Ask a real question in a fresh session
+
+```
+How many users do we have?
+```
+
+A new conversation that has never seen your project follows the index to the module, calls the API with the key from `.env`, and answers with the live row count. That's what happens in [the recorded session](https://gcontext.ai/first-session.html), where the answer is then verified against the database independently.
+
+### 5. Hand it the work in flight
+
+```
+We're migrating auth to OAuth. Track it as a task.
+```
+
+The agent creates a task module (`brief.md` for the goal, `status.md` for progress and blockers) and keeps it current as it works. Days later, in a fresh conversation, "continue the oauth migration" is all the briefing it needs.
+
+---
+
+**This quick start is tested.** The prompt in step 3 is extracted from [examples/first-integration.md](examples/first-integration.md) and run against a real model before releases, and [the full unedited transcript](https://gcontext.ai/first-session.html) of one run is public: every tool call, the module files the agent wrote, the verified answer. If the quick start stops working, the release does not ship.
+
+Prefer doing things by hand? Every step is also a deterministic command: `gcontext new`, `gcontext load`, `gcontext ls`, `gcontext validate`. See [Commands](#commands). The agent uses the same files either way.
 
 ---
 
 ## Your agent doesn't just know your stack. It operates it.
 
-An integration module is three things: what the service is (`info.md`), how to navigate it (`llms.txt`), and which secret it needs (`module.yaml`, name only). That turns out to be everything an agent needs to make real calls — no MCP server, no tool definitions, no plugin to install.
+An integration module is three things: what the service is (`info.md`), how to navigate it (`llms.txt`), and which secret it needs (`module.yaml`, name only). That turns out to be everything an agent needs to make real calls: no MCP server, no tool definitions, no plugin to install.
 
 ```
 $ claude → "Refund the duplicate charge for customer@acme.com"
 
 Reads stripe/info.md → knows refunds need the charge id, not the intent
 Looks up the customer, finds two charges 41s apart
-Refunds ch_3Oa2... ($49.00) — refund re_3Oa2... succeeded
+Refunds ch_3Oa2... ($49.00), refund re_3Oa2... succeeded
 ```
 
-MCP gives agents tools; for most of your stack, a markdown file plus an env var does the same job — and you can `git diff` it. The same module that explains your Stripe setup is the one that lets the agent act on it, and what it learns doing the work gets written back into the module. (The exchange above is illustrative; for a real one, unedited, see [the recorded session](https://gcontext.ai/first-session.html).)
+MCP gives agents tools; for most of your stack, a markdown file plus an env var does the same job, and you can `git diff` it. The same module that explains your Stripe setup is the one that lets the agent act on it, and what it learns doing the work gets written back into the module. (The exchange above is illustrative; for a real one, unedited, see [the recorded session](https://gcontext.ai/first-session.html).)
 
 ---
 
@@ -192,13 +191,13 @@ agent reads system.md
             └─ steps.md      → the actual procedure
 ```
 
-Only the index — one line per module — is always in context. Detail enters the window when the agent follows a link, fresh at the moment the task needs it. Unloaded modules cost zero tokens.
+Only the index (one line per module) is always in context. Detail enters the window when the agent follows a link, fresh at the moment the task needs it. Unloaded modules cost zero tokens.
 
-The mechanics are deliberately boring: `gcontext load postgres` creates a symlink `context/postgres → modules-repo/postgres` and regenerates the one-line-per-module index in `context/llms.txt`. `unload` removes the link. No copies, no database, no daemon — `modules-repo/` is the only place content lives, and you can inspect every byte the agent could read by opening a folder.
+The mechanics are deliberately boring: `gcontext load postgres` creates a symlink `context/postgres → modules-repo/postgres` and regenerates the one-line-per-module index in `context/llms.txt`. `unload` removes the link. No copies, no database, no daemon: `modules-repo/` is the only place content lives, and you can inspect every byte the agent could read by opening a folder.
 
-You won't need `unload` for a while: with fewer than ~10 modules, keep everything loaded — the resident index costs about one line per module. Load/unload starts paying off when modules outnumber what fits comfortably.
+You won't need `unload` for a while: with fewer than ~10 modules, keep everything loaded; the resident index costs about one line per module. Load/unload starts paying off when modules outnumber what fits comfortably.
 
-What's actually on disk after `init` — the seeded example module's `llms.txt`:
+What's actually on disk after `init`: the seeded example module's `llms.txt`:
 
 ```
 # example
@@ -211,7 +210,7 @@ What's actually on disk after `init` — the seeded example module's `llms.txt`:
 
 That's the whole trick: an index file per module, one root index over the loaded set, and an `AGENTS.md` that tells the agent to start there.
 
-The agent walks a knowledge tree; it doesn't search a vector space. You can't force a model to read anything — but you can make the relevant file one link away instead of buried at token 50,000, and you can see exactly what was available to it. You version-control your code and your docs — this is version control for what your agent knows.
+The agent walks a knowledge tree; it doesn't search a vector space. You can't force a model to read anything, but you can make the relevant file one link away instead of buried at token 50,000, and you can see exactly what was available to it. You version-control your code and your docs. This is version control for what your agent knows.
 
 ## Module kinds
 
@@ -222,7 +221,7 @@ Two kinds carry a workspace: what your agent **knows**, and what it's **working 
 | **Integration** | How to use an external service, API, or database | Permanent: lives as long as the service does | Stripe, Postgres, GitHub, Slack |
 | **Task** | A bounded piece of work and where it stands | Disposable: done when the work is done | Fix billing bug, migrate auth, ship feature X |
 
-Different shapes for different lifecycles. They coexist and compose. You never have to pick one — the agent chooses a kind when it creates a module; this table is for reading what it made.
+Different shapes for different lifecycles. They coexist and compose. You never have to pick one: the agent chooses a kind when it creates a module; this table is for reading what it made.
 
 ---
 
@@ -238,7 +237,7 @@ modules-repo/
   fix-billing-bug/   → task: reproduce, investigate, fix, verify
 ```
 
-The agent reads the database schema, understands CI, follows the deploy playbook, and tracks progress on the billing fix — all from structured context.
+The agent reads the database schema, understands CI, follows the deploy playbook, and tracks progress on the billing fix, all from structured context.
 
 **Support automation**
 
@@ -250,7 +249,7 @@ modules-repo/
   escalation/        → when and how to escalate
 ```
 
-An agent triaging tickets reads the Zendesk integration, checks Stripe for billing context, references the KB, and follows escalation rules — without a 10,000-token system prompt.
+An agent triaging tickets reads the Zendesk integration, checks Stripe for billing context, references the KB, and follows escalation rules, without a 10,000-token system prompt.
 
 **Claude Code / Cursor setup**
 
@@ -268,17 +267,17 @@ Point your coding agent at the workspace. It navigates to the module it needs pe
 
 ## Onboarding your team
 
-A colleague joining an existing workspace is the easiest path into gcontext — there is nothing to set up and nothing to learn:
+A colleague joining an existing workspace is the easiest path into gcontext: there is nothing to set up and nothing to learn:
 
 ```bash
 git clone <your-repo> && cd <your-repo>
-cp .env.example .env    # if present — fill in your own credentials (gcontext env shows what's missing)
-claude                  # or cursor, codex — the workspace tells the agent the rest
+cp .env.example .env    # if present, fill in your own credentials (gcontext env shows what's missing)
+claude                  # or cursor, codex; the workspace tells the agent the rest
 ```
 
 Their agent reads the same modules yours does: the schema notes, the deploy runbook, the gotchas your team already paid to learn. Your new hire's agent knows the codebase before they do.
 
-Nobody hand-maintains this. The agent updates modules as a side effect of doing work — it fixed a deploy quirk, it writes the quirk down — and the humans review the diffs in PRs like any other change. If a module goes stale, `git blame` tells you when and why.
+Nobody hand-maintains this. The agent updates modules as a side effect of doing work (it fixed a deploy quirk, it writes the quirk down), and the humans review the diffs in PRs like any other change. If a module goes stale, `git blame` tells you when and why.
 
 ---
 
@@ -286,7 +285,7 @@ Nobody hand-maintains this. The agent updates modules as a side effect of doing 
 
 **Isn't this just AGENTS.md / CLAUDE.md with extra steps?**
 
-A flat instructions file — including Claude Code's `@imports`, which inline everything at session start — puts the whole thing in the window every session, and quality degrades as it grows. gcontext keeps the always-loaded part tiny (one line per module) and everything else behind links the agent follows on demand. The honest answer to "couldn't I hand-roll this with a docs/ folder?" is: yes, partially — gcontext is that convention made consistent and cheap. The tooling adds what a convention can't enforce: load/unload per task, the regenerated index, module kinds with different lifecycles, secrets declared by name and checked with `gcontext env`, and `gcontext validate` to catch broken links and missing files. And because it's a shared convention rather than your house style, the same workspace works identically across Claude Code, Cursor, and Codex.
+A flat instructions file (including Claude Code's `@imports`, which inline everything at session start) puts the whole thing in the window every session, and quality degrades as it grows. gcontext keeps the always-loaded part tiny (one line per module) and everything else behind links the agent follows on demand. The honest answer to "couldn't I hand-roll this with a docs/ folder?" is: yes, partially; gcontext is that convention made consistent and cheap. The tooling adds what a convention can't enforce: load/unload per task, the regenerated index, module kinds with different lifecycles, secrets declared by name and checked with `gcontext env`, and `gcontext validate` to catch broken links and missing files. And because it's a shared convention rather than your house style, the same workspace works identically across Claude Code, Cursor, and Codex.
 
 **Is this the llms.txt web standard?**
 
@@ -294,11 +293,11 @@ Same filename, different job. The web proposal puts an index on public websites 
 
 **Don't agents just ignore context files anyway?**
 
-Instructions buried in a long monolithic prompt do decay — that's an argument *against* flat files, not against structure. You can't force a model to read anything; what you can do is keep the always-loaded part small and make the relevant file one link away, so it's read fresh at the moment the task touches it instead of sitting 50k tokens behind.
+Instructions buried in a long monolithic prompt do decay; that's an argument *against* flat files, not against structure. You can't force a model to read anything; what you can do is keep the always-loaded part small and make the relevant file one link away, so it's read fresh at the moment the task touches it instead of sitting 50k tokens behind.
 
 **Isn't maintaining a folder of markdown a chore? Wikis die this way.**
 
-Wikis die because humans must maintain them on the side. Here the agent maintains the modules as a side effect of doing work — when a session surfaces a gotcha or a changed endpoint, it updates the module then and there — and the human's job shrinks to reviewing diffs. That review step is the point: it's the same control you already have over code the agent writes.
+Wikis die because humans must maintain them on the side. Here the agent maintains the modules as a side effect of doing work (when a session surfaces a gotcha or a changed endpoint, it updates the module then and there), and the human's job shrinks to reviewing diffs. That review step is the point: it's the same control you already have over code the agent writes.
 
 **What does this cost in tokens?**
 
@@ -348,7 +347,7 @@ The filesystem is the most universal, inspectable, composable storage layer that
 
 ## Works with
 
-gcontext produces plain markdown with a navigable index — any agent that reads files can use it. We use it daily with:
+gcontext produces plain markdown with a navigable index. Any agent that reads files can use it. We use it daily with:
 
 - **Claude Code** (via the generated `CLAUDE.md` → `AGENTS.md`)
 - **Cursor**
@@ -361,7 +360,7 @@ Modules can declare required environment variables. Values go in `.env` (gitigno
 
 ## Status
 
-Current release: **v0.2.2** — early, small, and functional. The CLI surface (init, new, load/unload, ls, env, validate) is complete and covered by tests; the module format may still evolve before 1.0. The CLI is MIT and standalone. An optional hosted version with a web UI and built-in chat ([gcontext Cloud](https://gcontext.ai/how-it-works)) is in the works — the CLI does not depend on it.
+Current release: **v0.2.2**, early, small, and functional. The CLI surface (init, new, load/unload, ls, env, validate) is complete and covered by tests; the module format may still evolve before 1.0. The CLI is MIT and standalone. An optional hosted version with a web UI and built-in chat ([gcontext Cloud](https://gcontext.ai/how-it-works)) is in the works; the CLI does not depend on it.
 
 ---
 
