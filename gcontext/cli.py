@@ -260,9 +260,15 @@ def cmd_init(args):
     else:
         print("Created modules-repo/")
         print("Created context/")
+        print()
+        print("Now open your agent (Claude Code, Cursor, ...) and say:")
+        print()
+        print('    Set up gcontext for this project.')
+        print()
         print(
-            "Ready. Open your agent and ask it to create a module — "
-            "or run: gcontext new integration <name>"
+            "It will ask what you keep re-explaining and what you're working on,\n"
+            "then create and load your first modules. Prefer doing it by hand?\n"
+            "gcontext new integration <name>"
         )
 
 

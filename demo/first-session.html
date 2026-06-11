@@ -1,0 +1,599 @@
+<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>A real first session with gcontext</title><style>
+* { box-sizing: border-box; }
+body { font-family: -apple-system, 'Segoe UI', sans-serif; max-width: 880px;
+       margin: 0 auto; padding: 2.2rem 1rem 3rem; color: #1f2937;
+       background: #f8fafc; line-height: 1.55; }
+h1 { font-size: 1.65rem; margin: .2rem 0 .6rem; }
+h2 { font-size: 1.12rem; margin: 0 0 .7rem; }
+.subline { color: #4b5563; font-size: .95rem; margin: 0 0 .5rem; }
+.runmeta { color: #6b7280; font-size: .8rem; }
+.badge { display: inline-block; padding: .1rem .55rem; border-radius: 999px;
+         font-size: .75rem; font-weight: 600; color: #fff; background: #16a34a;
+         vertical-align: middle; }
+section { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
+          padding: 1.15rem 1.3rem; margin-bottom: 1.2rem; }
+p { font-size: .92rem; }
+.note { color: #6b7280; font-size: .84rem; }
+pre { background: #0f172a; color: #e2e8f0; padding: .8rem 1rem;
+      border-radius: 8px; overflow-x: auto; font-size: .78rem;
+      line-height: 1.45; white-space: pre-wrap; word-break: break-word; }
+code { background: #eef2f7; padding: .08rem .3rem; border-radius: 4px;
+       font-size: .85em; }
+pre code { background: none; padding: 0; }
+ol.user-steps { list-style: none; counter-reset: step; margin: .8rem 0 0;
+                padding: 0; }
+ol.user-steps > li { counter-increment: step; position: relative;
+                     padding: 0 0 .9rem 2.3rem; }
+ol.user-steps > li::before { content: counter(step); position: absolute;
+        left: 0; top: .05rem; width: 1.55rem; height: 1.55rem;
+        border-radius: 999px; background: #1f2937; color: #fff;
+        font-size: .8rem; font-weight: 700; display: flex;
+        align-items: center; justify-content: center; }
+ol.user-steps h3 { font-size: .95rem; margin: 0 0 .35rem; }
+ul.checks { list-style: none; padding-left: 0; margin: .6rem 0; }
+ul.checks li { padding: .18rem 0; font-size: .9rem; }
+ul.checks li::before { content: '\2713'; color: #16a34a; font-weight: 700;
+                       margin-right: .5rem; }
+ul.checks li small { color: #6b7280; margin-left: .4rem; }
+table.evidence { border-collapse: collapse; width: 100%; margin: .6rem 0;
+                 font-size: .85rem; }
+table.evidence td { border: 1px solid #e5e7eb; padding: .35rem .6rem;
+                    vertical-align: top; }
+table.evidence td:first-child { font-weight: 600; background: #f9fafb;
+                                width: 40%; }
+details { margin: .5rem 0; }
+summary { cursor: pointer; font-size: .88rem; font-weight: 600;
+          color: #374151; }
+.chat { border-left: 3px solid #e5e7eb; padding-left: .9rem; margin: .7rem 0; }
+.msg { margin: .55rem 0; font-size: .85rem; }
+.msg .who { font-weight: 700; font-size: .72rem; text-transform: uppercase;
+            letter-spacing: .04em; margin-bottom: .15rem; }
+.msg.prompt .who { color: #7c3aed; } .msg.assistant .who { color: #2563eb; }
+.msg.tool .who { color: #b45309; } .msg.tool_result .who { color: #6b7280; }
+.msg.meta_ev { color: #6b7280; font-style: italic; }
+.msg pre { margin: .2rem 0 0; }
+.msg.assistant .body { white-space: pre-wrap; }
+.punchline { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0 .4rem; }
+.punch-card { flex: 1 1 220px; border: 1px solid #e5e7eb; border-radius: 10px;
+              padding: 1rem; text-align: center; background: #f9fafb; }
+.punch-card .num { font-size: 2.5rem; font-weight: 700; color: #16a34a;
+                   line-height: 1.1; }
+.punch-card .lbl { font-size: .74rem; color: #6b7280;
+                   text-transform: uppercase; letter-spacing: .05em;
+                   margin-top: .35rem; }
+.match { text-align: center; color: #16a34a; font-weight: 600;
+         font-size: .95rem; }
+footer { color: #6b7280; font-size: .85rem; margin-top: 1.6rem; }
+footer a { color: #2563eb; }
+</style></head><body>
+<header>
+  <h1>A real first session with gcontext</h1>
+  <p class="subline">This page is generated from an actual test run on
+  June 11, 2026: a real model dropped into a fresh, empty
+  workspace. The transcripts below are unedited; secrets are masked.
+  Nothing here is mocked.</p>
+  <p class="runmeta"><span class="badge">&#10003; passed</span>
+  <code>tests/e2e/test_agent_journey.py::test_claude_creates_then_uses_supabase_integration</code>
+  &middot; 179s end to end</p>
+</header>
+<section>
+  <h2>What the user did</h2>
+  <p>Three copy-paste steps. This is the entire setup.</p>
+  <ol class="user-steps">
+    <li>
+      <h3>Initialize the workspace</h3>
+      <pre><code>gcontext init</code></pre>
+    </li>
+    <li>
+      <h3>Put the keys in <code>.env</code></h3>
+      <pre><code>SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SECRET_KEY=sb_secret_...</code></pre>
+      <p class="note">Only the names <code>SUPABASE_URL</code> and
+      <code>SUPABASE_SECRET_KEY</code> ever appear in module files. The
+      values stay in the gitignored <code>.env</code>.</p>
+    </li>
+    <li>
+      <h3>Say the prompt</h3>
+      <pre><code>Create a supabase integration module for our Supabase project and load it
+into the workspace. The project URL and a secret API key are already in
+.env as SUPABASE_URL and SUPABASE_SECRET_KEY. Declare both by name in
+module.yaml and NEVER copy their values into any module file. In info.md,
+document how to call the Supabase REST API (PostgREST) with those
+variables: base path /rest/v1/, the apikey and Authorization headers, and
+an example table query.</code></pre>
+    </li>
+  </ol>
+</section>
+<section>
+  <h2>What the agent did</h2>
+  <p>It read the workspace conventions, created
+  <code>modules-repo/supabase/</code> with the three files an integration is
+  made of (<code>module.yaml</code>, <code>info.md</code>,
+  <code>llms.txt</code>), and loaded the module into the workspace.</p>
+  <details><summary>Full transcript: Session 1 — agent creates the supabase integration (38 events, unedited)</summary><div class="chat"><div class="msg prompt"><div class="who">prompt</div><pre>Create a supabase integration module for our Supabase project and load it
+into the workspace. The project URL and a secret API key are already in
+.env as SUPABASE_URL and SUPABASE_SECRET_KEY. Declare both by name in
+module.yaml and NEVER copy their values into any module file. In info.md,
+document how to call the Supabase REST API (PostgREST) with those
+variables: base path /rest/v1/, the apikey and Authorization headers, and
+an example table query. The gcontext CLI is not installed here, so create the module files and the context/ symlink by hand following context/structure.md and context/principles.md.</pre></div><div class="msg assistant"><div class="who">assistant</div><div class="body">I&#x27;ll start by reading the gcontext docs as AGENTS.md instructs, then look at the workspace layout.</div></div><div class="msg tool"><div class="who">tool call — Read</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/system.md&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>1	&lt;!-- GENERATED by gcontext. This file is rewritten on every `gcontext load`/`unload`. Do not edit it directly — edit modules in modules-repo/ instead. --&gt;
+2	
+3	# System
+4	
+5	You are an AI agent powered by loaded context modules.
+6	
+7	You are direct, efficient, and familiar with the loaded context. No hedging, no filler. Lead with the answer.
+8	
+9	## Two responsibilities
+10	
+11	1. **Operate modules** — read context, run scripts, answer questions. This file covers that.
+12	2. **Modify context** — create or edit modules. See [principles.md](principles.md) before doing this.
+13	
+14	## First run — setting up a new workspace
+15	
+16	**Trigger:** the user asks to set up gcontext, get started, or onboard the project while the workspace has no real modules yet — the Loaded modules table at the end of this file is empty and `modules-repo/` contains nothing beyond the seeded `example/`. Skip this section entirely when real modules already exist (e.g. a colleague joining an existing workspace — their setup is just filling in `.env`).
+17	
+18	Do NOT explain the module taxonomy, and never ask the user to pick a module kind — you pick it. Run a short interview instead:
+19	
+20	1. Ask three questions: *&quot;What do you find yourself re-explaining to your agent every session?&quot;*, *&quot;What does it always get wrong about this project?&quot;*, and *&quot;What are you in the middle of right now?&quot;*
+21	2. From the answers — plus what you can discover yourself in the repo (its README, manifest files like `package.jso
+… [4174 more chars truncated for the report]</pre></div><div class="msg tool"><div class="who">tool call — Bash</div><pre>{
+  &quot;command&quot;: &quot;find /private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace -not -path &#x27;*/node_modules/*&#x27; | head -50&quot;,
+  &quot;description&quot;: &quot;List workspace files&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace
+/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context
+/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/.gitignore
+/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/.env
+/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/modules-repo
+/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/AGENTS.md
+/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/CLAUDE.md
+/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/module_features.md
+/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/llms.txt
+/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/principles.md
+/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude
+… [969 more chars truncated for the report]</pre></div><div class="msg tool"><div class="who">tool call — Read</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/structure.md&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>1	&lt;!-- GENERATED by gcontext. This file is rewritten on every `gcontext load`/`unload`. Do not edit it directly — edit modules in modules-repo/ instead. --&gt;
+2	
+3	# Module Structure
+4	
+5	Auto-generated from `manifest.py` and `kind_specs.py`. Do not edit by hand.
+6	
+7	## module.yaml schema
+8	
+9	- `name` (str, required) — Folder slug; must match the module directory name.
+10	- `kind` (&#x27;integration&#x27; | &#x27;task&#x27; | &#x27;workflow&#x27;, default &quot;integration&quot;) — One of: &quot;integration&quot;, &quot;task&quot;, &quot;workflow&quot;. Determines the module&#x27;s file layout (see Module kinds below).
+11	- `secrets` (list[str], default []) — Environment variable names this module needs at runtime. Values are read from the `.env` file at the project root (see secrets.md).
+12	- `dependencies` (list[str], default []) — Python packages the module&#x27;s scripts need at runtime. Install them in your environment before running module scripts.
+13	
+14	Omit fields that match their default. Unknown fields are rejected.
+15	
+16	## Module kinds
+17	
+18	### `integration`
+19	
+20	Reusable access to an external service, API, database, or local tool.
+21	
+22	**Files written at creation:**
+23	- `module.yaml`
+24	- `llms.txt`
+25	- `info.md` — Purpose, Where it lives, Auth &amp; access, Key entities, Operations, Examples.
+26	
+27	**Default growth folders** (lazy: created on first entry; seed these into `llms.txt` `## Where to write` at module creation):
+28	- `notes` -&gt; `notes/&lt;date-slug&gt;.md`
+29	
+30	### `task`
+31	
+32	A bounded outcome needing progress tracking, subt
+… [1421 more chars truncated for the report]</pre></div><div class="msg tool"><div class="who">tool call — Read</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/principles.md&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>1	&lt;!-- GENERATED by gcontext. This file is rewritten on every `gcontext load`/`unload`. Do not edit it directly — edit modules in modules-repo/ instead. --&gt;
+2	
+3	# Principles — Modifying Context
+4	
+5	These are the rules for creating, editing, or extending modules.
+6	
+7	## Module locations
+8	
+9	Modules live at `modules-repo/&lt;slug&gt;/`. The `context/` directory contains symlinks for the subset of modules currently loaded into the active workspace — **it is a view, not a storage location.**
+10	
+11	Two operations that look similar but are NOT the same:
+12	
+13	- **Create / edit a module.** You write files at `modules-repo/&lt;slug&gt;/...`. This is the only kind of write you perform.
+14	- **Load a module into the workspace.** This creates a symlink inside `context/`. It is managed by the `gcontext` CLI, not by you.
+15	
+16	Each module is a folder with at least `module.yaml` and `llms.txt`.
+17	
+18	## Reading context before modifying
+19	
+20	Before answering anything that references or implies a topic likely covered by an existing module, read that module&#x27;s `llms.txt` first. If `llms.txt` declares a `## Where to write` section, that section governs where any subsequent appends go (path, naming pattern, template). Do NOT invent a new location.
+21	
+22	If no module matches, you may answer from general knowledge — but if the conversation produces durable content (a finding, a note worth keeping, a new procedure), propose a new module rather than silently dropping it.
+23	
+24	## Module schema and k
+… [674 more chars truncated for the report]</pre></div><div class="msg tool"><div class="who">tool call — Read</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/secrets.md&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>1	&lt;!-- GENERATED by gcontext. This file is rewritten on every `gcontext load`/`unload`. Do not edit it directly — edit modules in modules-repo/ instead. --&gt;
+2	
+3	# Secrets
+4	
+5	Secrets are environment variables. Modules declare which variables they need in `module.yaml` under the `secrets:` list — variable names only, never values.
+6	
+7	## How it works
+8	
+9	1. Check a module&#x27;s `module.yaml` for its `secrets:` list
+10	2. Values live in `.env` at the project root (gitignored, never committed)
+11	3. `.env.example` is auto-generated with all required variable names
+12	4. Run `gcontext env` to check which variables are set or missing
+13	
+14	## Rules
+15	
+16	- Never hardcode secret values in module files
+17	- Never commit `.env` to version control
+18	- Access secrets via `os.environ` in scripts
+19	</pre></div><div class="msg tool"><div class="who">tool call — Read</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/llms.txt&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>1	&lt;!-- GENERATED by gcontext. This file is rewritten on every `gcontext load`/`unload`. Do not edit it directly — edit modules in modules-repo/ instead. --&gt;
+2	
+3	# Context
+4	
+5	</pre></div><div class="msg tool"><div class="who">tool call — Read</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/modules-repo/example/module.yaml&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>1	name: example
+2	</pre></div><div class="msg tool"><div class="who">tool call — Read</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/modules-repo/example/llms.txt&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>1	# example
+2	
+3	&gt; A sample module demonstrating the context module structure
+4	
+5	- [info.md](info.md): What this module contains and how to use it
+6	- [module.yaml](module.yaml): Module configuration
+7	</pre></div><div class="msg tool"><div class="who">tool call — Read</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/modules-repo/example/info.md&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>1	# example
+2	
+3	## Purpose
+4	This is a sample module showing the structure of a context module. Use it as a reference when creating your own modules.
+5	
+6	## Where it lives
+7	This module exists locally in your workspace.
+8	
+9	## Auth &amp; access
+10	No authentication needed — this is a documentation-only module.
+11	
+12	## Key entities
+13	- **Modules** — folders with a `module.yaml` and `llms.txt`
+14	- **Kinds** — integration, task, or workflow
+15	
+16	## Operations
+17	- Read this module&#x27;s files to understand the structure
+18	- Create your own module with `gcontext new integration &lt;name&gt;`
+19	
+20	## Examples
+21	```bash
+22	# Create a new integration module
+23	gcontext new integration stripe
+24	
+25	# Load it into the workspace
+26	gcontext load stripe
+27	
+28	# Check module structure
+29	gcontext validate stripe
+30	```
+31	</pre></div><div class="msg tool"><div class="who">tool call — Bash</div><pre>{
+  &quot;command&quot;: &quot;cut -d= -f1 /private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/.env&quot;,
+  &quot;description&quot;: &quot;List variable names in .env without values&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>Permission to use Bash with command cut -d= -f1 /private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/.env has been denied.</pre></div><div class="msg tool"><div class="who">tool call — Write</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/modules-repo/supabase/module.yaml&quot;,
+  &quot;content&quot;: &quot;name: supabase\nsecrets:\n  - SUPABASE_URL\n  - SUPABASE_SECRET_KEY\n&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>File created successfully at: /private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/modules-repo/supabase/module.yaml (file state is current in your context — no need to Read it back)</pre></div><div class="msg tool"><div class="who">tool call — Write</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/modules-repo/supabase/llms.txt&quot;,
+  &quot;content&quot;: &quot;# supabase\n\n&gt; Integration with our Supabase project: how to call the REST API (PostgREST) using the `SUPABASE_URL` and `SUPABASE_SECRET_KEY` secrets\n\n- [info.md](info.md): Auth headers, the /rest/v1/ base path, and example table queries against the Supabase REST API\n- [module.yaml](module.yaml): Module configuration and required secret names\n\n## Where to write\n\n- notes/&lt;date-slug&gt;.md: dated notes (schema findings, gotchas, query recipes) discovered while working with Supabase\n&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>File created successfully at: /private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/modules-repo/supabase/llms.txt (file state is current in your context — no need to Read it back)</pre></div><div class="msg tool"><div class="who">tool call — Write</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/modules-repo/supabase/info.md&quot;,
+  &quot;content&quot;: &quot;# supabase\n\n## Purpose\nREST access to our Supabase project&#x27;s Postgres database through the PostgREST API, authenticated with the project&#x27;s secret API key.\n\n## Where it lives\nThe project base URL is the value of `SUPABASE_URL` (stored in `.env` at the project root, never in this module). The REST API is served under the base path:\n\n```\n{SUPABASE_URL}/rest/v1/\n```\n\n## Auth &amp; access\nTwo secrets, declared by name in `module.yaml`, values read from `.env`:\n\n- `SUPABASE_URL`: the Supabase project URL\n- `SUPABASE_SECRET_KEY`: a secret API key; it bypasses Row Level Security, so it is server-side only and must never be exposed to a browser, logged, or written into module files\n\nEvery REST request must send the key in both headers:\n\n```\napikey: &lt;value of SUPABASE_SECRET_KEY&gt;\nAuthorization: Bearer &lt;value of SUPABASE_SECRET_KEY&gt;\n```\n\nIn scripts, read both values via `os.environ`; in shell, source `.env` first. Never hardcode the values.\n\n## Key entities\n- **Tables and views**: each exposed table or view in the `public` schema is available at `{SUPABASE_URL}/rest/v1/&lt;table&gt;`\n- **Rows**: returned as JSON arrays of objects; selected, filtered, ordered, and paginated via query parameters\n- **RPC functions**: exposed Postgres functions are callable at `{SUPABASE_URL}/rest/v1/rpc/&lt;function&gt;` with a JSON body of arguments\n\n## Operations\n- **Read rows**: `GET /rest/v1/&lt;table&gt;?select=&lt;columns&gt;&amp;&lt;filters&gt;`\n- **Filter**: `?&lt;column&gt;=eq.&lt;value&gt;` (also `gt.`, `gte.`, `lt.`, `lte.`, `neq.`, `like.`, `in.(a,b)`)\n- **Order and paginate**: `?order=&lt;column&gt;.desc&amp;limit=&lt;n&gt;&amp;offset=&lt;n&gt;`\n- **Insert**: `POST /rest/v1/&lt;table&gt;` with a JSON object (or array) body, plus `Content-Type: application/json`; add `Prefer: return=representation` to get the inserted rows back\n- **Update**
+… [1414 more chars truncated for the report]</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>File created successfully at: /private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/modules-repo/supabase/info.md (file state is current in your context — no need to Read it back)</pre></div><div class="msg tool"><div class="who">tool call — Bash</div><pre>{
+  &quot;command&quot;: &quot;ln -s ../modules-repo/supabase /private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/supabase &amp;&amp; ls -la /private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/&quot;,
+  &quot;description&quot;: &quot;Create context/ symlink to the supabase module&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>total 56
+drwxr-xr-x@ 9 bsampera  staff   288 Jun 11 00:34 .
+drwxr-xr-x@ 8 bsampera  staff   256 Jun 11 00:33 ..
+-rw-r--r--@ 1 bsampera  staff   169 Jun 11 00:33 llms.txt
+-rw-r--r--@ 1 bsampera  staff   712 Jun 11 00:33 module_features.md
+-rw-r--r--@ 1 bsampera  staff  2099 Jun 11 00:33 principles.md
+-rw-r--r--@ 1 bsampera  staff   758 Jun 11 00:33 secrets.md
+-rw-r--r--@ 1 bsampera  staff  2757 Jun 11 00:33 structure.md
+lrwxr-xr-x@ 1 bsampera  staff    24 Jun 11 00:34 supabase -&gt; ../modules-repo/supabase
+-rw-r--r--@ 1 bsampera  staff  5482 Jun 11 00:33 system.md</pre></div><div class="msg tool"><div class="who">tool call — Edit</div><pre>{
+  &quot;replace_all&quot;: false,
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/llms.txt&quot;,
+  &quot;old_string&quot;: &quot;# Context\n\n&quot;,
+  &quot;new_string&quot;: &quot;# Context\n\n- [supabase/llms.txt](supabase/llms.txt): Supabase project integration: REST API (PostgREST) access using the SUPABASE_URL and SUPABASE_SECRET_KEY secrets\n&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>The file /private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/llms.txt has been updated successfully. (file state is current in your context — no need to Read it back)</pre></div><div class="msg tool"><div class="who">tool call — Edit</div><pre>{
+  &quot;replace_all&quot;: false,
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/system.md&quot;,
+  &quot;old_string&quot;: &quot;## Loaded modules\n\nNo modules loaded.&quot;,
+  &quot;new_string&quot;: &quot;## Loaded modules\n\n| Module | Kind | Description |\n| --- | --- | --- |\n| [supabase](supabase/llms.txt) | integration | Supabase project REST API (PostgREST) access using `SUPABASE_URL` and `SUPABASE_SECRET_KEY` |&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>The file /private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/system.md has been updated successfully. (file state is current in your context — no need to Read it back)</pre></div><div class="msg tool"><div class="who">tool call — Bash</div><pre>{
+  &quot;command&quot;: &quot;ls context/supabase/ &amp;&amp; grep -rn \&quot;SUPABASE\&quot; modules-repo/supabase/ | grep -v -E \&quot;SUPABASE_(URL|SECRET_KEY)\&quot; || echo \&quot;OK: only variable names referenced, no values\&quot;&quot;,
+  &quot;description&quot;: &quot;Verify symlink resolves and no secret values leaked into module files&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>info.md
+llms.txt
+module.yaml
+OK: only variable names referenced, no values</pre></div><div class="msg assistant"><div class="who">assistant</div><div class="body">The supabase integration module is created and loaded into the workspace. Since the gcontext CLI isn&#x27;t installed, I emulated `gcontext load` by hand.
+
+What was created:
+
+- `modules-repo/supabase/module.yaml`: declares `name: supabase` and the two secrets by name only (`SUPABASE_URL`, `SUPABASE_SECRET_KEY`). The `kind: integration` field is omitted because it&#x27;s the default per `structure.md`.
+- `modules-repo/supabase/info.md`: follows the integration template sections (Purpose, Where it lives, Auth &amp; access, Key entities, Operations, Examples). It documents the `/rest/v1/` base path, the requirement to send the key in both the `apikey` and `Authorization: Bearer` headers, common PostgREST filters (`eq.`, `order`, `limit`, etc.), and runnable examples: a curl table query that sources `.env`, a stdlib-only Python query run with `uv run`, and an insert with `Prefer: return=representation`. It also notes the secret key bypasses Row Level Security, so it&#x27;s server-side only.
+- `modules-repo/supabase/llms.txt`: module index with one-line descriptions plus a `## Where to write` section seeding the `notes/&lt;date-slug&gt;.md` growth folder.
+- `context/supabase -&gt; ../modules-repo/supabase` symlink, verified to resolve.
+
+I also updated the two generated index files a real `gcontext load` would rewrite, so the module is actually discoverable: `context/llms.txt` now lists the module, and the &quot;Loaded modules&quot; table in `context/system.md` shows it. The next real `gcontext load`/`unload` will regenerate both, which is fine.
+
+No secret values appear anywhere in the module: I verified the files reference only the variable names. One note: my attempt to read `.env` (names only, via `cut`) was denied, so I took the variable names from your message as given; if either name differs in `.env`, `module.yaml` and `info.md` need the same one-word fix.</div></div><div class="msg meta_ev"><div class="who">session finished</div><div class="body">18 turns, 138s, $1.01</div></div></div></details>
+  <p class="note">One footnote for honesty: the test run appends a clause to
+  the prompt telling the agent the gcontext CLI binary is not installed in
+  the test sandbox, so it creates the module files and the
+  <code>context/</code> symlink by hand. You can see that clause at the end
+  of the prompt in the transcript above. Everything else is exactly the
+  walkthrough prompt shown in step 3.</p>
+</section>
+<section>
+  <h2>What it built</h2>
+  <p>The module files, exactly as the agent wrote them. Note that
+  <code>module.yaml</code> declares secret names only, never values.</p>
+  <details open><summary><code>modules-repo/supabase/info.md</code></summary><pre># supabase
+
+## Purpose
+REST access to our Supabase project&#x27;s Postgres database through the PostgREST API, authenticated with the project&#x27;s secret API key.
+
+## Where it lives
+The project base URL is the value of `SUPABASE_URL` (stored in `.env` at the project root, never in this module). The REST API is served under the base path:
+
+```
+{SUPABASE_URL}/rest/v1/
+```
+
+## Auth &amp; access
+Two secrets, declared by name in `module.yaml`, values read from `.env`:
+
+- `SUPABASE_URL`: the Supabase project URL
+- `SUPABASE_SECRET_KEY`: a secret API key; it bypasses Row Level Security, so it is server-side only and must never be exposed to a browser, logged, or written into module files
+
+Every REST request must send the key in both headers:
+
+```
+apikey: &lt;value of SUPABASE_SECRET_KEY&gt;
+Authorization: Bearer &lt;value of SUPABASE_SECRET_KEY&gt;
+```
+
+In scripts, read both values via `os.environ`; in shell, source `.env` first. Never hardcode the values.
+
+## Key entities
+- **Tables and views**: each exposed table or view in the `public` schema is available at `{SUPABASE_URL}/rest/v1/&lt;table&gt;`
+- **Rows**: returned as JSON arrays of objects; selected, filtered, ordered, and paginated via query parameters
+- **RPC functions**: exposed Postgres functions are callable at `{SUPABASE_URL}/rest/v1/rpc/&lt;function&gt;` with a JSON body of arguments
+
+## Operations
+- **Read rows**: `GET /rest/v1/&lt;table&gt;?select=&lt;columns&gt;&amp;&lt;filters&gt;`
+- **Filter**: `?&lt;column&gt;=eq.&lt;value&gt;` (also `gt.`, `gte.`, `lt.`, `lte.`, `neq.`, `like.`, `in.(a,b)`)
+- **Order and paginate**: `?order=&lt;column&gt;.desc&amp;limit=&lt;n&gt;&amp;offset=&lt;n&gt;`
+- **Insert**: `POST /rest/v1/&lt;table&gt;` with a JSON object (or array) body, plus `Content-Type: application/json`; add `Prefer: return=representation` to get the inserted rows back
+- **Update**: `PATCH /rest/v1/&lt;table&gt;?&lt;filter&gt;` with a JSON body of changed columns; always include a filter
+- **Delete**: `DELETE /rest/v1/&lt;table&gt;?&lt;filter&gt;`; always include a filter, an unfiltered DELETE affects every row
+
+## Examples
+
+Query a table with curl (loads secrets from `.env`, never inlines them):
+
+```bash
+set -a; source .env; set +a
+curl &quot;$SUPABASE_URL/rest/v1/todos?select=id,title,done&amp;done=eq.false&amp;order=id.desc&amp;limit=10&quot; \
+  -H &quot;apikey: $SUPABASE_SECRET_KEY&quot; \
+  -H &quot;Authorization: Bearer $SUPABASE_SECRET_KEY&quot;
+```
+
+Same query from Python (stdlib only, run with `uv run`):
+
+```python
+# uv run query_todos.py
+import json
+import os
+import urllib.request
+
+base = os.environ[&quot;SUPABASE_URL&quot;].rstrip(&quot;/&quot;)
+key = os.environ[&quot;SUPABASE_SECRET_KEY&quot;]
+
+req = urllib.request.Request(
+    f&quot;{base}/rest/v1/todos?select=id,title,done&amp;done=eq.false&amp;limit=10&quot;,
+    headers={&quot;apikey&quot;: key, &quot;Authorization&quot;: f&quot;Bearer {key}&quot;},
+)
+with urllib.request.urlopen(req) as resp:
+    print(json.dumps(json.load(resp), indent=2))
+```
+
+Insert a row:
+
+```bash
+set -a; source .env; set +a
+curl -X POST &quot;$SUPABASE_URL/rest/v1/todos&quot; \
+  -H &quot;apikey: $SUPABASE_SECRET_KEY&quot; \
+  -H &quot;Authorization: Bearer $SUPABASE_SECRET_KEY&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Prefer: return=representation&quot; \
+  -d &#x27;{&quot;title&quot;: &quot;buy milk&quot;, &quot;done&quot;: false}&#x27;
+```
+</pre></details><details><summary><code>modules-repo/supabase/llms.txt</code></summary><pre># supabase
+
+&gt; Integration with our Supabase project: how to call the REST API (PostgREST) using the `SUPABASE_URL` and `SUPABASE_SECRET_KEY` secrets
+
+- [info.md](info.md): Auth headers, the /rest/v1/ base path, and example table queries against the Supabase REST API
+- [module.yaml](module.yaml): Module configuration and required secret names
+
+## Where to write
+
+- notes/&lt;date-slug&gt;.md: dated notes (schema findings, gotchas, query recipes) discovered while working with Supabase
+</pre></details><details open><summary><code>modules-repo/supabase/module.yaml</code></summary><pre>name: supabase
+secrets:
+  - SUPABASE_URL
+  - SUPABASE_SECRET_KEY
+</pre></details>
+</section>
+<section>
+  <h2>How we verified it</h2>
+  <p>Every check is deterministic; none of them trusts the agent's own
+  account of what it did.</p>
+  <ul class="checks"><li>Ran `gcontext init` in a fresh temp workspace, put SUPABASE_URL and SUPABASE_SECRET_KEY in .env</li><li>Session 1 prompt extracted from examples/first-integration.md<small>the public walkthrough doc is execution-tested</small></li><li>Headless claude session 1 finished (module creation)</li><li>module.yaml declares secrets by name only<small>secrets: [&#x27;SUPABASE_URL&#x27;, &#x27;SUPABASE_SECRET_KEY&#x27;]</small></li><li>Credential-leak scan clean<small>2 values checked against 3 module files, 0 hits</small></li><li>Module is loaded (context/ symlink) and `gcontext validate` passes</li><li>Fresh session answered with the real users row count<small>verified independently against the Supabase REST API</small></li></ul>
+  <table class="evidence"><tr><td>Tables (independent Supabase API call)</td><td>users</td></tr><tr><td>Module created by the agent</td><td>supabase</td></tr><tr><td>users row count (independent Supabase API call)</td><td>14</td></tr><tr><td>Agent&#x27;s answer (session 2)</td><td>14</td></tr></table>
+  <details><summary><code>gcontext validate supabase (output)</code></summary><pre>supabase  PASS
+</pre></details>
+</section>
+<section>
+  <h2>Then a fresh session used it</h2>
+  <p>A second session starts with zero context: a new conversation that has
+  never seen the project. It gets one question:</p>
+  <pre><code>Using the supabase integration module in this workspace, find out how many users are in the users table, and reply with only the number.</code></pre>
+  <details><summary>Full transcript: Session 2 — fresh agent uses the integration (19 events, unedited)</summary><div class="chat"><div class="msg prompt"><div class="who">prompt</div><pre>Using the supabase integration module in this workspace, find out how many users are in the users table, and reply with only the number.</pre></div><div class="msg assistant"><div class="who">assistant</div><div class="body">I&#x27;ll start by reading the workspace context files as instructed.</div></div><div class="msg tool"><div class="who">tool call — Read</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/system.md&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>1	&lt;!-- GENERATED by gcontext. This file is rewritten on every `gcontext load`/`unload`. Do not edit it directly — edit modules in modules-repo/ instead. --&gt;
+2	
+3	# System
+4	
+5	You are an AI agent powered by loaded context modules.
+6	
+7	You are direct, efficient, and familiar with the loaded context. No hedging, no filler. Lead with the answer.
+8	
+9	## Two responsibilities
+10	
+11	1. **Operate modules** — read context, run scripts, answer questions. This file covers that.
+12	2. **Modify context** — create or edit modules. See [principles.md](principles.md) before doing this.
+13	
+14	## First run — setting up a new workspace
+15	
+16	**Trigger:** the user asks to set up gcontext, get started, or onboard the project while the workspace has no real modules yet — the Loaded modules table at the end of this file is empty and `modules-repo/` contains nothing beyond the seeded `example/`. Skip this section entirely when real modules already exist (e.g. a colleague joining an existing workspace — their setup is just filling in `.env`).
+17	
+18	Do NOT explain the module taxonomy, and never ask the user to pick a module kind — you pick it. Run a short interview instead:
+19	
+20	1. Ask three questions: *&quot;What do you find yourself re-explaining to your agent every session?&quot;*, *&quot;What does it always get wrong about this project?&quot;*, and *&quot;What are you in the middle of right now?&quot;*
+21	2. From the answers — plus what you can discover yourself in the repo (its README, manifest files like `package.jso
+… [4355 more chars truncated for the report]</pre></div><div class="msg tool"><div class="who">tool call — Read</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/supabase/llms.txt&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>File does not exist. Note: your current working directory is /private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace.</pre></div><div class="msg tool"><div class="who">tool call — Bash</div><pre>{
+  &quot;command&quot;: &quot;ls -la /private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/ /private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/ /private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/modules-repo/supabase/ 2&gt;&amp;1&quot;,
+  &quot;description&quot;: &quot;List workspace, context, and supabase module directories&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/:
+total 32
+drwxr-xr-x@ 8 bsampera  staff  256 Jun 11 00:33 .
+drwx------@ 3 bsampera  staff   96 Jun 11 00:33 ..
+-rw-r--r--@ 1 bsampera  staff  116 Jun 11 00:33 .env
+-rw-r--r--@ 1 bsampera  staff    5 Jun 11 00:33 .gitignore
+-rw-r--r--@ 1 bsampera  staff  346 Jun 11 00:33 AGENTS.md
+-rw-r--r--@ 1 bsampera  staff   11 Jun 11 00:33 CLAUDE.md
+drwxr-xr-x@ 9 bsampera  staff  288 Jun 11 00:35 context
+drwxr-xr-x@ 4 bsampera  staff  128 Jun 11 00:34 modules-repo
+
+/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/:
+total 56
+drwxr-xr-x@ 9 bsampera  staff   288 Jun 11 00:35 .
+drwxr-xr-x@ 8 bsampera  staff   256 Jun 11 00:33 ..
+-rw-r--r--@ 1 bsampera  staff   324 Jun 11 00:35 llms.txt
+-rw-r--r--@ 1 bsampera  staff   712 Jun 11 00:33 module_features.md
+-rw-r--r--@ 1 bsampera  staff  2099 Jun 11 00:33 principles.md
+-rw-r--r--@ 1 bsampera  staff   758 Jun 11 00:33 secrets.md
+-rw-r--r--@ 1 bsampera  staff  2757 Jun 11 00:33 structure.md
+lrwxr-xr-x@ 1 bsampera  staff    24 Jun 11 00:34 supabase -&gt; ../modules-repo/supabase
+-rw-r--r--@ 1 bsampera  staff  5657 Jun 11 00:35 system.md
+
+/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/modules-repo/supabase/:
+total 24
+drwxr-xr-x@ 5 bsampera  staff   160 Jun 11 00:
+… [232 more chars truncated for the report]</pre></div><div class="msg tool"><div class="who">tool call — Read</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/modules-repo/supabase/info.md&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>1	# supabase
+2	
+3	## Purpose
+4	REST access to our Supabase project&#x27;s Postgres database through the PostgREST API, authenticated with the project&#x27;s secret API key.
+5	
+6	## Where it lives
+7	The project base URL is the value of `SUPABASE_URL` (stored in `.env` at the project root, never in this module). The REST API is served under the base path:
+8	
+9	```
+10	{SUPABASE_URL}/rest/v1/
+11	```
+12	
+13	## Auth &amp; access
+14	Two secrets, declared by name in `module.yaml`, values read from `.env`:
+15	
+16	- `SUPABASE_URL`: the Supabase project URL
+17	- `SUPABASE_SECRET_KEY`: a secret API key; it bypasses Row Level Security, so it is server-side only and must never be exposed to a browser, logged, or written into module files
+18	
+19	Every REST request must send the key in both headers:
+20	
+21	```
+22	apikey: &lt;value of SUPABASE_SECRET_KEY&gt;
+23	Authorization: Bearer &lt;value of SUPABASE_SECRET_KEY&gt;
+24	```
+25	
+26	In scripts, read both values via `os.environ`; in shell, source `.env` first. Never hardcode the values.
+27	
+28	## Key entities
+29	- **Tables and views**: each exposed table or view in the `public` schema is available at `{SUPABASE_URL}/rest/v1/&lt;table&gt;`
+30	- **Rows**: returned as JSON arrays of objects; selected, filtered, ordered, and paginated via query parameters
+31	- **RPC functions**: exposed Postgres functions are callable at `{SUPABASE_URL}/rest/v1/rpc/&lt;function&gt;` with a JSON body of arguments
+32	
+33	## Operations
+34	- **Read rows**: `GET /rest/v1/&lt;table&gt;?select=&lt;columns&gt;&amp;&lt;filters&gt;`
+… [1832 more chars truncated for the report]</pre></div><div class="msg tool"><div class="who">tool call — Read</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/modules-repo/supabase/module.yaml&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>1	name: supabase
+2	secrets:
+3	  - SUPABASE_URL
+4	  - SUPABASE_SECRET_KEY
+5	</pre></div><div class="msg tool"><div class="who">tool call — Read</div><pre>{
+  &quot;file_path&quot;: &quot;/private/var/folders/72/vmspb0xd0412b4p5f8q03m400000gn/T/pytest-of-bsampera/pytest-29/test_claude_creates_then_uses_0/workspace/context/secrets.md&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>1	&lt;!-- GENERATED by gcontext. This file is rewritten on every `gcontext load`/`unload`. Do not edit it directly — edit modules in modules-repo/ instead. --&gt;
+2	
+3	# Secrets
+4	
+5	Secrets are environment variables. Modules declare which variables they need in `module.yaml` under the `secrets:` list — variable names only, never values.
+6	
+7	## How it works
+8	
+9	1. Check a module&#x27;s `module.yaml` for its `secrets:` list
+10	2. Values live in `.env` at the project root (gitignored, never committed)
+11	3. `.env.example` is auto-generated with all required variable names
+12	4. Run `gcontext env` to check which variables are set or missing
+13	
+14	## Rules
+15	
+16	- Never hardcode secret values in module files
+17	- Never commit `.env` to version control
+18	- Access secrets via `os.environ` in scripts
+19	</pre></div><div class="msg assistant"><div class="who">assistant</div><div class="body">The module docs show how to query PostgREST. I&#x27;ll request an exact count of the users table.</div></div><div class="msg tool"><div class="who">tool call — Bash</div><pre>{
+  &quot;command&quot;: &quot;set -a; source .env; set +a; curl -s -I \&quot;$SUPABASE_URL/rest/v1/users?select=id\&quot; -H \&quot;apikey: $SUPABASE_SECRET_KEY\&quot; -H \&quot;Authorization: Bearer $SUPABASE_SECRET_KEY\&quot; -H \&quot;Prefer: count=exact\&quot; -H \&quot;Range: 0-0\&quot; | grep -i content-range&quot;,
+  &quot;description&quot;: &quot;Get exact row count of users table via PostgREST&quot;
+}</pre></div><div class="msg tool_result"><div class="who">tool result</div><pre>content-range: 0-13/14</pre></div><div class="msg assistant"><div class="who">assistant</div><div class="body">14</div></div><div class="msg meta_ev"><div class="who">session finished</div><div class="body">8 turns, 40s, $0.41</div></div></div></details>
+  <div class="punchline">
+    <div class="punch-card">
+      <div class="num">14</div>
+      <div class="lbl">users, independent Supabase API call</div>
+    </div>
+    <div class="punch-card">
+      <div class="num">14</div>
+      <div class="lbl">users, the agent's answer</div>
+    </div>
+  </div>
+  <p class="match">The numbers match. The test fails if they do not.</p>
+</section>
+<footer>
+  <p>Do this yourself in three copy-pastes:
+  <a href="../examples/first-integration.md">the walkthrough</a>.
+  This exact flow runs against a real model before every release; if the
+  prompt stops working, the release fails.</p>
+  <p>Generated by <code>scripts/render_first_session.py</code> from run
+  2026-06-11 00:36:07. The full masked record is committed as
+  <a href="first-session.json"><code>demo/first-session.json</code></a>.</p>
+</footer></body></html>

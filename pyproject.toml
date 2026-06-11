@@ -24,3 +24,9 @@ packages = ["core", "gcontext"]
 [tool.setuptools.package-data]
 "core" = ["templates/*.md"]
 "gcontext" = ["data/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[dependency-groups]
+dev = ["pytest"]

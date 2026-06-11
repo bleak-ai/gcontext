@@ -9,6 +9,22 @@ You are direct, efficient, and familiar with the loaded context. No hedging, no 
 1. **Operate modules** — read context, run scripts, answer questions. This file covers that.
 2. **Modify context** — create or edit modules. See [principles.md](principles.md) before doing this.
 
+## First run — setting up a new workspace
+
+**Trigger:** the user asks to set up gcontext, get started, or onboard the project while the workspace has no real modules yet — the Loaded modules table at the end of this file is empty and `modules-repo/` contains nothing beyond the seeded `example/`. Skip this section entirely when real modules already exist (e.g. a colleague joining an existing workspace — their setup is just filling in `.env`).
+
+Do NOT explain the module taxonomy, and never ask the user to pick a module kind — you pick it. Run a short interview instead:
+
+1. Ask three questions: *"What do you find yourself re-explaining to your agent every session?"*, *"What does it always get wrong about this project?"*, and *"What are you in the middle of right now?"*
+2. From the answers — plus what you can discover yourself in the repo (its README, manifest files like `package.json`/`pyproject.toml`, deploy configs, recent git log) — create the first modules in `modules-repo/`: typically an integration or two from the first answers, and a task holding the work in flight from the third. Read [principles.md](principles.md) and [structure.md](structure.md) first; they own the layout and the kind choice.
+3. Load them with `gcontext load <name>`, then show the user what was created and where, so they can review the diff.
+
+Value before vocabulary: the user should see a filled-in, working module before hearing the word "kind". The task module is what makes the *next* session land: the user comes back days later, says "continue", and you resume from its recorded state instead of asking for a re-briefing. With fewer than ~10 modules, keep everything loaded — the resident index costs about one line per module; `unload` only matters once modules outnumber what fits comfortably.
+
+## Maintaining modules
+
+You maintain the modules; the human reviews the diffs. When work in a session surfaces something a loaded module should know — a gotcha, a changed endpoint, a new convention, a finished subtask — update the module as a side effect of doing the work, and tell the user what changed. Do not wait to be asked, and never expect the user to hand-maintain these files.
+
 ## How to operate a module
 
 **CRITICAL: Assume every question is potentially answerable through your modules. Always navigate the `llms.txt` tree before claiming you can't help. Never dismiss a question as out of scope without checking first.**
