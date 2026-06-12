@@ -1,11 +1,17 @@
 [project]
 name = "gcontext-ai"
-version = "0.2.3"
+version = "0.2.4"
 description = "gcontext — file-based knowledge protocol for AI agents"
 requires-python = ">=3.11"
 dependencies = ["pydantic", "pyyaml", "simple-term-menu"]
 license = "MIT"
 readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
 
 [project.urls]
 Homepage = "https://gcontext.ai"
