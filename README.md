@@ -6,12 +6,11 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/pypi/pyversions/gcontext-ai)](https://pypi.org/project/gcontext-ai/)
 
-Gcontext defines a to structure context for you AI Agent. 
-The main concept is a tree of llms.txt that reference either folder or files with information. By using this tree of llms.txt, instead of a simple Claude.md, it's possible to just load in the agent the right information at every time, and from this, be able to grow the context that the agent has access to and create a type of "Live Memory". 
+The main concept is a tree of llms.txt that references either folders or files. The goal is to load in a conversation with an AI agent the right information at every time, and from this, be able to grow the context that the agent has access to and create a something analogous to a "Live Memory" or Live Record of things. 
 
-What is the difference from Claude Code Memory system? 
+### What is the difference from Claude Code Memory system? 
 
-The problem is the same, but Gcontext is for users that want to treat the context as a Problem on it's own, while Memory handles everything behind the scenes, Gcontext treats Context as something similar to Code, something that a profficient user has to understand and dicate how it's built and structured.
+The problem is the same, but Gcontext is for users that want to treat the Context as a problem on it's own, while Memory handles everything behind the scenes, Gcontext allows the user to define how Context should be defined and be much more precise in which are the steps that an AI agent does.
 
 
 ![How an agent navigates a gcontext workspace: a root llms.txt routes to stripe, firestore and support modules, each with its own llms.txt, notes and keys; the support module expands into per-task runbooks and daily logs](demo/gcontext-tree.png)
@@ -19,29 +18,47 @@ The problem is the same, but Gcontext is for users that want to treat the contex
 
 ## How to use it
 
-Install and create the workspace:
+**1. Install and create the workspace.**
 
 ```bash
 curl -LsSf https://gcontext.ai/gcontext/install.sh | sh   # or: uv tool install gcontext-ai
 gcontext init
 ```
 
-Put your keys in `.env` (module files only ever name the variables; the values stay gitignored):
+**2. Ask your agent to build a module.** Open your agent in the workspace and name the integration you want:
+
+```
+Create a supabase integration module and load it.
+```
+
+The agent writes `info.md`, an `llms.txt` index, and a `module.yaml` that declares which secrets it needs by name only (the values never leave `.env`).
+
+**3. Fill in the secrets it asks for.** The module tells you which variables to set; put them in `.env`:
 
 ```bash
-STRIPE_SECRET_KEY=sk_...
+SUPABASE_URL=https://....supabase.co
+SUPABASE_SECRET_KEY=...
 ```
 
-Open your agent in the workspace and ask it to build a module:
+**4. Enrich the module with real data.** Now that the access is in place, ask the agent to explore the live service and write down what it finds:
 
 ```
-Create a stripe integration module from our account and load it.
-The key is in .env as STRIPE_SECRET_KEY.
+Look in supabase and update the module information with real read requests.
 ```
 
-The agent writes `info.md`, an `llms.txt` index, and a `module.yaml` that declares the secret by name only. From then on a fresh session can answer real questions ("how many active subscriptions does this gym have?") by following the index to the module and calling the API with the key from `.env`.
+From then on a fresh session can answer questions ("how many rows are in the members table?") by following the index to the module and calling the API with the key from `.env`.
 
 ![gcontext demo](demo/gcontext-real-demo.gif)
+
+### Adding more integrations
+
+Repeat step 2 for each new service, and a tree starts to form: a root `llms.txt` routing to one module per integration, each declaring its own keys. Just ask:
+
+```
+Create a stripe integration module and load it.
+```
+
+The more integrations you add, the more the workspace becomes a single place that coordinates access to all of them, which is exactly when gcontext pays off.
 
 ## When to use it
 
@@ -56,7 +73,7 @@ This project has been developed at the startup [MAAT](https://maatapp.com), Mana
 2. **With AI - Mainly CLAUDE.md.** We explained in the Claude.md how our system works and which were the most common causes of problems, it gave us most of the times the right indications, but often we still had to do manual work and exploration for many tasks, still repetitive as we didn't had a place to store the runbooks.
 3. **With AI + GContext** This allowed us to intertwine completely the AI in our processes. When we do now an exploration for a task, we can save this exploration in a md file, referenced by an llms.txt and the AI model will be able to find it later. 
 
-You can browse that exact workspace in this repo: [`case-studies/maat-support/`](case-studies/maat-support/). It is the tree from the diagram above: a root `llms.txt` router over the `stripe` and `firestore` integration modules, plus a `support` module with its runbooks and execution logs.
+You can browse an example of it here: [`case-studies/maat-support/`](case-studies/maat-support/). It is the tree from the diagram above: a root `llms.txt` router over the `stripe` and `firestore` integration modules, plus a `support` module with its runbooks and execution logs.
 
 ## Commands
 
@@ -74,7 +91,7 @@ The rest the agent does for you from plain language, just ask:
 
 | Just ask the agent | Equivalent CLI |
 |---------|-------------|
-| "Create a stripe integration module" | `gcontext new <kind> <name> [summary]` |
+| "Create a supabase integration module" | `gcontext new <kind> <name> [summary]` |
 | "Which modules do we have?" | `gcontext ls` |
 
 ---
