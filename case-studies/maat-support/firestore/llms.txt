@@ -1,0 +1,6 @@
+# firestore
+
+> MAAT's primary database. GCP Cloud Firestore holding gym, member, lesson, and operational data across dev and prod.
+
+- [info.md](info.md): Database structure, auth, operations, and code patterns for the Firestore integration
+- [module.yaml](module.yaml): Secret names and Python dependencies

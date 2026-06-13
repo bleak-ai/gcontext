@@ -1,0 +1,6 @@
+# stripe
+
+> Payment processing for MAAT: member subscriptions and gym-owner billing. Read/write access split by key.
+
+- [info.md](info.md): Business context, auth, operations, and code patterns for the Stripe integration
+- [module.yaml](module.yaml): Secret names and Python dependencies

@@ -1,0 +1,7 @@
+name: stripe
+kind: integration
+secrets:
+  - STRIPE_API_KEY_RO
+  - STRIPE_API_KEY_RW
+dependencies:
+  - stripe

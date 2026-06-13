@@ -1,0 +1,13 @@
+# runbooks
+
+> Reusable step-by-step procedures for recurring support task types. The agent consults these before attempting a task and writes a new one after completing a task it has not seen before.
+
+- [Change Membership Plan](change-membership-plan.md): Change a member's subscription plan (e.g. weekly to Unlimited) via Stripe and Firestore
+- [Swap Sibling Membership](swap-sibling-membership.md): Transfer an active subscription from one sibling to another under the same parent account
+- [Update Belt Requirements](update-belt-requirements.md): Update the number of classes required per belt in a gym's belt system (Firestore)
+- [Add Attendance Credits](add-attendance-credits.md): Add attendance credits to multiple members in bulk
+- [Export Member Roster](export-member-roster.md): Export all member names from a gym as a CSV for the owner to fill in data
+- [Member Attendance Report](member-attendance-report.md): Export a full report of attended classes for a specific member as a CSV
+- [Refund a Payment](refund-payment.md): Issue a full or partial refund for a member or gym-owner payment via Stripe
+- [Fix Plan Sync](fix-plan-sync.md): Fix Firestore membership data out of sync after a Stripe subscription change
+- [GDPR Data Export](gdpr-data-export.md): Export all personal data for a user under GDPR Article 15 (Right of Access)

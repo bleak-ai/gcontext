@@ -115,7 +115,7 @@ def _regenerate():
     """Regenerate all auto-generated files in context/."""
     _prune_stale_links()
     # OSS-specific system.md template (no cloud-only features like cron jobs
-    # or browser apps; mentions the seeded example module).
+    # or browser apps; mentions the seeded starter module).
     template_content = _read_pkg_text("gcontext", "data", "system.md")
     generate_root_llms_txt(CONTEXT_DIR)
     generate_structure_md(CONTEXT_DIR, audience="oss")
@@ -209,7 +209,7 @@ def _generate_env_example():
 # Commands
 # ---------------------------------------------------------------------------
 
-_EXAMPLE_FILES = ["module.yaml", "llms.txt", "info.md"]
+_SEED_FILES = ["module.yaml", "llms.txt", "info.md"]
 
 
 def cmd_init(args):
@@ -238,12 +238,12 @@ def cmd_init(args):
     MODULES_DIR.mkdir(exist_ok=True)
     CONTEXT_DIR.mkdir(exist_ok=True)
 
-    # Seed the example module when modules-repo is empty
+    # Seed the starter module when modules-repo is empty
     if not any(MODULES_DIR.iterdir()):
-        example_dest = MODULES_DIR / "example"
-        example_dest.mkdir(parents=True, exist_ok=True)
-        for fname in _EXAMPLE_FILES:
-            _copy_pkg_file("gcontext", ("data", "example", fname), example_dest / fname)
+        seed_dest = MODULES_DIR / "seed"
+        seed_dest.mkdir(parents=True, exist_ok=True)
+        for fname in _SEED_FILES:
+            _copy_pkg_file("gcontext", ("data", "seed", fname), seed_dest / fname)
 
     # Create .gitignore if it doesn't exist
     gitignore = Path.cwd() / ".gitignore"

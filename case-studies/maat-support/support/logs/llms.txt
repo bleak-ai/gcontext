@@ -1,0 +1,7 @@
+# logs
+
+> Detailed records of what changed for each resolved support task, organized by month. Each log captures the gym, operations performed, and outcome.
+
+## Months
+
+- [March 2026](2026-03.md): belt requirement updates, sibling membership swap, plan changes, attendance credits, a refund, and a member attendance report

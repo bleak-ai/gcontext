@@ -1,0 +1,9 @@
+# maat-support
+
+> An anonymized example of the gcontext workspace MAAT runs for support: a root router over two integrations and the support operation built on top of them. Gyms, members, and IDs are fictional.
+
+## Modules
+
+- [stripe](stripe/llms.txt): Payment processing for member subscriptions and gym-owner billing, read/write split by key
+- [firestore](firestore/llms.txt): Primary database, gyms, members, lessons, and operational data across dev and prod
+- [support](support/llms.txt): Support operations, the six-phase ticket workflow, plus runbooks and execution logs

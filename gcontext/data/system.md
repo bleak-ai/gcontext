@@ -69,4 +69,4 @@ Modules can carry scripts: plain Python files run on demand, like a `verify.py` 
 
 If you are asked to create a task, add an integration, start a workflow, create a new module, edit module files, or change anything in `modules-repo/<slug>/`, read [principles.md](principles.md) and [structure.md](structure.md) first. They own the rules for where things go, module kinds, and how writes are gated.
 
-A reference module showing the expected format lives at `modules-repo/example/` — read it before creating or restructuring modules.
+A reference module showing the expected format lives at `modules-repo/seed/`, read it before creating or restructuring modules.

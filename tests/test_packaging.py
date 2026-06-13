@@ -10,7 +10,7 @@ point). This module builds the real artifact and exercises it:
 2. `uv build` a wheel there.
 3. Install the wheel into a fresh venv.
 4. Run the installed `gcontext` binary and assert the bundled package
-   data (example module, secrets.md, core templates) actually shipped.
+   data (seed module, secrets.md, core templates) actually shipped.
 
 Requires `uv` on PATH; skipped otherwise.
 """
@@ -81,10 +81,10 @@ def test_installed_init_ships_package_data(gcontext_bin, tmp_path):
     project.mkdir()
     _run([gcontext_bin, "init"], cwd=project)
 
-    # Example module comes from gcontext/data/example package data
-    example = project / "modules-repo" / "example"
+    # Seed module comes from gcontext/data/seed package data
+    seed = project / "modules-repo" / "seed"
     for fname in ["module.yaml", "llms.txt", "info.md"]:
-        assert (example / fname).is_file(), f"example module missing {fname}"
+        assert (seed / fname).is_file(), f"seed module missing {fname}"
 
     # secrets.md ships from gcontext/data, the others from core/templates
     for fname in [

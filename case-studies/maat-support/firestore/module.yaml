@@ -1,0 +1,7 @@
+name: firestore
+kind: integration
+secrets:
+  - FS_KEY
+  - FS_SECRET
+dependencies:
+  - google-cloud-firestore

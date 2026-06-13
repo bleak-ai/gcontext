@@ -1,6 +1,6 @@
-# example
+# seed
 
-> A sample module demonstrating the context module structure
+> Starter module seeded into a new workspace — a reference for the structure of a context module
 
 - [info.md](info.md): What this module contains and how to use it
 - [module.yaml](module.yaml): Module configuration

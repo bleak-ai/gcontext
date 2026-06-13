@@ -50,11 +50,11 @@ class TestInit:
         assert code == 0
         assert "Created modules-repo/" in out
 
-        # Seeded example module — present but NOT loaded
-        example = workspace / "modules-repo" / "example"
+        # Seeded starter module, present but NOT loaded
+        seed = workspace / "modules-repo" / "seed"
         for fname in ["module.yaml", "llms.txt", "info.md"]:
-            assert (example / fname).is_file()
-        assert not (workspace / "context" / "example").exists()
+            assert (seed / fname).is_file()
+        assert not (workspace / "context" / "seed").exists()
 
         # Generated context files
         for fname in CONTEXT_FILES:
@@ -77,7 +77,7 @@ class TestInit:
 
     def test_init_twice_errors_and_overwrites_nothing(self, workspace, run):
         run("init")
-        sentinel = workspace / "modules-repo" / "example" / "my-notes.md"
+        sentinel = workspace / "modules-repo" / "seed" / "my-notes.md"
         sentinel.write_text("precious user content\n")
 
         code, out = run("init")
@@ -221,13 +221,13 @@ class TestLoad:
     def test_load_multiple(self, workspace, run):
         run("init")
         run("new", "integration", "postgres")
-        code, _ = run("load", "example", "postgres")
+        code, _ = run("load", "seed", "postgres")
         assert code == 0
-        assert (workspace / "context" / "example").is_symlink()
+        assert (workspace / "context" / "seed").is_symlink()
         assert (workspace / "context" / "postgres").is_symlink()
 
         root_llms = (workspace / "context" / "llms.txt").read_text()
-        assert "[example](example/llms.txt)" in root_llms
+        assert "[seed](seed/llms.txt)" in root_llms
         assert "[postgres](postgres/llms.txt)" in root_llms
 
     def test_load_unknown_module_errors(self, workspace, run):
@@ -238,10 +238,10 @@ class TestLoad:
 
     def test_load_twice_is_noop(self, workspace, run):
         run("init")
-        run("load", "example")
-        code, out = run("load", "example")
+        run("load", "seed")
+        code, out = run("load", "seed")
         assert code == 0
-        assert "Already loaded: example" in out
+        assert "Already loaded: seed" in out
 
     def test_load_generates_env_example_from_secrets(self, workspace, run):
         run("init")
@@ -264,7 +264,7 @@ class TestLoad:
 class TestEnv:
     def test_env_with_no_secrets(self, workspace, run):
         run("init")
-        run("load", "example")
+        run("load", "seed")
         code, out = run("env")
         assert code == 0
         assert "No loaded modules declare secrets." in out
@@ -298,7 +298,7 @@ class TestValidate:
         run("new", "workflow", "release")
         code, out = run("validate")
         assert code == 0
-        for name in ["example", "postgres", "migrate-db", "release"]:
+        for name in ["seed", "postgres", "migrate-db", "release"]:
             assert f"{name}  PASS" in out
 
     def test_validate_fails_on_missing_required_file(self, workspace, run):
@@ -350,18 +350,18 @@ class TestValidate:
 class TestUnload:
     def test_unload_removes_link_and_regenerates(self, workspace, run):
         run("init")
-        run("load", "example")
-        code, out = run("unload", "example")
+        run("load", "seed")
+        code, out = run("unload", "seed")
         assert code == 0
-        assert "Unloaded example" in out
-        assert not (workspace / "context" / "example").exists()
-        assert "[example]" not in (workspace / "context" / "llms.txt").read_text()
+        assert "Unloaded seed" in out
+        assert not (workspace / "context" / "seed").exists()
+        assert "[seed]" not in (workspace / "context" / "llms.txt").read_text()
         # Module itself is untouched
-        assert (workspace / "modules-repo" / "example" / "info.md").is_file()
+        assert (workspace / "modules-repo" / "seed" / "info.md").is_file()
 
     def test_unload_not_loaded_errors(self, workspace, run):
         run("init")
-        code, out = run("unload", "example")
+        code, out = run("unload", "seed")
         assert code == 1
         assert "is not loaded" in out
 
@@ -375,7 +375,7 @@ class TestLs:
         assert code == 0
         loaded_section = out[out.index("LOADED"):out.index("AVAILABLE")]
         assert "postgres" in loaded_section
-        assert "example" in out[out.index("AVAILABLE"):]
+        assert "seed" in out[out.index("AVAILABLE"):]
 
 
 class TestVersion:

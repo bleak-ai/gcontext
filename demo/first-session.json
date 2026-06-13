@@ -10,8 +10,8 @@
         "detail": ""
       },
       {
-        "title": "Session 1 prompt extracted from examples/first-integration.md",
-        "detail": "the public walkthrough doc is execution-tested"
+        "title": "Session 1 prompt: create the supabase integration module",
+        "detail": "the create prompt is execution-tested"
       },
       {
         "title": "Headless claude session 1 finished (module creation)",

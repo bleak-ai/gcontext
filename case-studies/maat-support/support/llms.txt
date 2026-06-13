@@ -1,0 +1,7 @@
+# support
+
+> MAAT support operations: resolve tickets through runbooks and the stripe + firestore integrations, then log the result.
+
+- [info.md](info.md): What support does and the six-phase workflow for resolving a ticket
+- [runbooks/](runbooks/llms.txt): Reusable step-by-step procedures, one per recurring task type
+- [logs/](logs/llms.txt): Execution logs for resolved tasks, organized by month
