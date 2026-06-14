@@ -25,7 +25,9 @@ import pytest
 TESTS_DIR = Path(__file__).resolve().parent
 PKG_ROOT = TESTS_DIR.parent
 IS_PUBLIC_LAYOUT = (PKG_ROOT / "core").is_dir()
-REPO_ROOT = PKG_ROOT if IS_PUBLIC_LAYOUT else PKG_ROOT.parent
+# Public repo: CLI is at the repo root. Monorepo: CLI is at apps/cli, so the
+# monorepo root (which holds scripts/publish_oss.py) is two levels up.
+REPO_ROOT = PKG_ROOT if IS_PUBLIC_LAYOUT else PKG_ROOT.parent.parent
 
 UV = shutil.which("uv")
 
