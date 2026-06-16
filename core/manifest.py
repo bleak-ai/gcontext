@@ -190,8 +190,6 @@ def _format_type(annotation) -> str:
     origin = getattr(annotation, "__origin__", None)
     if origin is list:
         (inner,) = annotation.__args__
-        if inner is JobSpec:
-            return "list[JobSpec]"
         return f"list[{_PRIMITIVE_NAMES.get(inner, inner.__name__)}]"
     if typing.get_origin(annotation) is Literal:
         return " | ".join(repr(v) for v in typing.get_args(annotation))
